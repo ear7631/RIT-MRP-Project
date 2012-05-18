@@ -73,10 +73,10 @@ public class Navigator {
         while(true) {
             //figure out where we are
             safeWander();
-            Point pos = whereAreWe(distribution);
-            if(pos != null) {
-                //I think we know where we are int he map.
-                offset = Point(pos);
+            Point p = whereAreWe(distribution);
+            if(p != null) {
+                //I think we know where we are in the map.
+                offset = Point(p);
                 break;
             }
         }
