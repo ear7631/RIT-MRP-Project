@@ -33,6 +33,7 @@ public class Navigator {
     static final int K = 100;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
+    static final double PROB_THRESHOLD = 0.1;
 
     public static void main(String[] args) {
 		String filename;
@@ -146,13 +147,13 @@ public class Navigator {
 
         // Make some new points for all the ones we took out
         LinkedList<Point> additions = new LinkedList<Point>();
-        while(distribution.length < K) {
+        while(distribution.size() < K) {
             double temp_tot = 0;
-            target = rand.nextDouble();
+            double target = rand.nextDouble();
             for(Point p : distribution) {
                 temp_tot += p.prob;
                 if(temp_tot > target) {
-                    distribution.add(Point(p));
+                    distribution.add(new Point(p));
                     break;
                 }
             }
@@ -168,6 +169,7 @@ public class Navigator {
         }
 
         // Return a guess if we have one, otherwise null
+        return null;
     }
 }
 
