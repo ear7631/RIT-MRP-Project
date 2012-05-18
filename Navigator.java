@@ -76,7 +76,7 @@ public class Navigator {
             Point p = whereAreWe(distribution);
             if(p != null) {
                 //I think we know where we are in the map.
-                offset = Point(p);
+                offset = new Point(p);
                 break;
             }
         }
