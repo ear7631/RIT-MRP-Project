@@ -69,15 +69,21 @@ public class Navigator {
 		pos = pc.requestInterfacePosition2D(0,PlayerConstants.PLAYER_OPEN_MODE);
         sonar = pc.requestInterfaceSonar(0,PlayerConstants.PLAYER_OPEN_MODE);
 
+        Point offset;
         while(true) {
             //figure out where we are
             safeWander();
             Point pos = whereAreWe(distribution);
             if(pos != null) {
                 //I think we know where we are int he map.
+                offset = Point(pos);
                 break;
             }
         }
+
+        // Translate the offset by where we think we are now.
+        offset.x -= pos.getX();
+        offset.y -= pos.getY();
 
         //TODO: pathfind
 	}
