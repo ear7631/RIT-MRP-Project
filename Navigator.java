@@ -69,17 +69,15 @@ public class Navigator {
 		pos = pc.requestInterfacePosition2D(0,PlayerConstants.PLAYER_OPEN_MODE);
         sonar = pc.requestInterfaceSonar(0,PlayerConstants.PLAYER_OPEN_MODE);
 
-        Point offset;
-        while(true) {
-            //figure out where we are
+        Point offset = null;
+        while(offset == null) {
             safeWander();
+            System.out.println("Trying to find where we are...");
+            //figure out where we are
             Point p = whereAreWe(distribution);
-            if(p != null) {
-                //I think we know where we are in the map.
-                offset = new Point(p);
-                break;
-            }
+            offset = p;
         }
+        System.out.printf("I think we're at %s\n", offset);
 
         // Translate the offset by where we think we are now.
         offset.x -= pos.getX();
