@@ -16,10 +16,7 @@ public class Point {
     }
     
     public Point(Point p) {
-        this.x = p.x;
-        this.y = p.y;
-        this.yaw = p.yaw;
-        this.prob = p.prob;
+        this(p.x, p.y, p.yaw, p.prob);
     }
 
     public String toString() {
