@@ -185,7 +185,7 @@ public class Navigator {
             p.prob /= prob_tot;
         }
         for(Point p : distribution) {
-            if(p.prob < PROB_THRESHOLD) {
+            if(p.prob < PROB_THRESHOLD || map.valid(p)) {
                 toRemove.add(p);
             }
         }
