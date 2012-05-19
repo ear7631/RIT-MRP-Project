@@ -191,6 +191,9 @@ public class Navigator {
 
         // Make some new points for all the ones we took out
         LinkedList<Point> additions = new LinkedList<Point>();
+        if(distribution.size() == 0) {
+            distribution = getNewDistribution();
+        }
         distribution = scale(distribution);
         while(distribution.size() < K) {
             double temp_tot = 0;
