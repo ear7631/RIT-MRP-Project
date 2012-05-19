@@ -47,6 +47,15 @@ public class Navigator {
 			return;
 		}
 
+		pos = pc.requestInterfacePosition2D(0, PlayerConstants.PLAYER_OPEN_MODE);
+        pos.setMotorPower(1);
+        while(sonar == null) {
+            System.out.println("Let's try that again...");
+            //laser = pc.requestInterfaceRanger(0, PlayerConstants.PLAYER_OPEN_MODE);
+            sonar = pc.requestInterfaceSonar(0, PlayerConstants.PLAYER_OPEN_MODE);
+        }
+        System.out.println(sonar);
+
 		Scanner fileReader = null;
 		try {
 			fileReader = new Scanner(new File(filename));
@@ -55,12 +64,8 @@ public class Navigator {
 			return;
 		}
 
-        LinkedList<Point> distribution = getNewDistribution();
+        LinkedList<Point> distribution = getNewDistribution();;
         
-		pos = pc.requestInterfacePosition2D(0,PlayerConstants.PLAYER_OPEN_MODE);
-        pos.setMotorPower(1);
-        laser = pc.requestInterfaceRanger(0,PlayerConstants.PLAYER_OPEN_MODE);
-
         Point offset = null;
         while(offset == null) {
             safeWander();
@@ -91,11 +96,11 @@ public class Navigator {
         double turnrate = 0, fwd = 0.2;
         double omega = 20*Math.PI/180; 
 
-        pc.readAll();
-        if (!laser.isDataReady()) {
-            System.out.println("Waiting on laser");
-            return;
-        }
+        do {
+            System.out.println("Waiting on ranger");
+            pc.readAll();
+        } while(!sonar.isDataReady());
+
         double[] ranges = rangerToArr();
         
         if (ranges[1] < 0.5) {
@@ -135,8 +140,9 @@ public class Navigator {
         return distribution;
     }
 
+
     public static Point whereAreWe(LinkedList<Point> distribution) {
-        if (!laser.isDataReady()) {
+        if (!sonar.isDataReady()) {
             System.out.println("Waiting on laser");
             return null;
         }
@@ -214,18 +220,19 @@ public class Navigator {
     }
 
     private static double[] rangerToArr() {
-        double[] ranges = laser.getData().getRanges();
-        //float[] ranges = sonar.getData().getRanges();
+        //double[] ranges = laser.getData().getRanges();
+        float[] ranges = sonar.getData().getRanges();
         double[] retval = new double[3];
         
-        // Ranger values!
+        /* Ranger values!
         retval[0] = (ranges[85]+ranges[90]) / 2.0;
         retval[1] = (ranges[592]+ranges[597]) / 2.0;
         retval[2] = (ranges[340]+ranges[345]) / 2.0;
-        // Sonar values!
-        //retval[0] = (ranges[1]+ranges[2]) / 2.0;
-        //retval[0] = (ranges[3]+ranges[4]) / 2.0;
-        //retval[0] = (ranges[5]+ranges[6]) / 2.0;
+        */
+        /* Sonar values! */
+        retval[0] = (ranges[1]+ranges[2]) / 2.0;
+        retval[1] = (ranges[3]+ranges[4]) / 2.0;
+        retval[2] = (ranges[5]+ranges[6]) / 2.0;
 
         return retval;
     }
