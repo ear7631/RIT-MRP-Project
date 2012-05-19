@@ -62,7 +62,7 @@ public class Navigator {
                 x = (int)(rand.nextDouble() * map.width);
                 y = (int)(rand.nextDouble() * map.height);
             } while(!map.valid(x, y));
-            distribution.add(new Point(x, y, 1/K));
+            distribution.add(new Point(x, y, (double)1/K));
             //System.out.printf("(%d, %d)", x, y);
         }
         
