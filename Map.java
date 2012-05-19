@@ -38,9 +38,8 @@ public class Map {
     public int[] checkHere(Point p) {
         int[] retVal = new int[4];
         for(int i=0; i<4; i++) {
-            int x = i%2==0 ? (i/2==0 ? -5 : 5) : 0;
-            int y = i/2==0 ? (i%2==0 ? -5 : 5) : 0;
-            System.out.printf("(%d, %d)\n", x, y);
+            int x = i/2==0 ? (i%2==0 ? -5 : 5) : 0;
+            int y = i/2==1 ? (i%2==0 ? -5 : 5) : 0;
             while(!valid(p.x+x, p.y+y)) {
                 x = x<0 ? x+1 : x>0 ? x-1 : x;
                 y = y<0 ? y+1 : y>0 ? y-1 : y;
@@ -48,7 +47,6 @@ public class Map {
             retVal[i] = Math.abs(x+y);
         }
         return retVal;
-
     }
 
     public static void main(String args[]) {
