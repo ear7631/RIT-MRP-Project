@@ -6,13 +6,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Map.Entry;
 
 
 public class Planner {
 	
+	private static boolean DEBUG = false;
+	
 	private HashMap<Point, HashSet<Point>> roadmap;
 	private HashMap<String, Point> points;
+	
+	private HashMap<Point, Point> boundaries;
 	
 	public static final String FILENAME = "provided_bytes.dat";
 	private GridMap painter;
@@ -21,8 +26,10 @@ public class Planner {
 	public Planner() {
 		this.roadmap = new HashMap<Point, HashSet<Point>>();
 		this.points = new HashMap<String, Point>();
+		this.boundaries = new HashMap<Point, Point>();
 		this.generateRoadmapPoints();
 		this.generateRoadmapEdges();
+		this.setSimulationBoundaries();
 		painter = new GridMap(2000, 700);
 		this.painter.setVisible(false);
 		
@@ -66,19 +73,96 @@ public class Planner {
 		}
 	}
 
-	public Point nextLocalWaypoint(Point goal) {
-		System.out.println("Begin Algorithm.");
-		goal = this.points.get("C1");
-		Point pos = this.points.get("H0"); //Navigator.whereAreWe(Navigator.distribution);
+	
+	private Point findClosestRoadmapNode(Point origin) {
+		// If the point is not in our roadmap, check which roadmap point is closest
+		// Use that node as the neighbor
+		if(this.points.values().contains(origin)) {
+			return origin;
+		}
 		
+		double minimum = Double.MAX_VALUE;
+		Point neighbor = null;
+		
+		for(Point candidate : this.points.values()) {
+			double d = Math.sqrt(
+					((candidate.x - origin.x) * (candidate.x - origin.x)) + 
+					((candidate.y - origin.y) * (candidate.y - origin.y)));
+			
+			if(d < minimum && !this.lineClips(origin, candidate)) {
+				neighbor = candidate;
+				minimum = d;
+			}
+		}
+		
+		// uhoh case
+		if(neighbor == null) {
+			minimum = Double.MAX_VALUE;
+						
+			for(Point candidate : this.points.values()) {
+				double d = Math.sqrt(
+						((candidate.x - origin.x) * (candidate.x - origin.x)) + 
+						((candidate.y - origin.y) * (candidate.y - origin.y)));
+				
+				if(d < minimum) {
+					neighbor = candidate;
+					minimum = d;
+				}
+			}
+		}
+		
+		return neighbor;
+	}
+	
+	public Point nextLocalWaypoint(Point goal) {
+		Point start = null;
+		
+		if(DEBUG) {
+			System.out.println("Debug is on, using preset points.");
+			start = this.generateRandomPoint(new Random());
+			this.drawPoint(start, 0xFF0000FF);
+			this.refreshImage();
+			//start = this.point.get("G4");
+			goal = this.points.get("C1");
+		} else {
+			start = Navigator.whereAreWe(Navigator.distribution);
+			this.drawPoint(start, 0xFF0000FF);
+			this.refreshImage();
+		}
+		
+		// Create a copy of the roadmap.
+		// Do this because we add in neighbors for this iteration only.
+		HashMap<Point, HashSet<Point>> copymap = new HashMap<Point, HashSet<Point>>(this.roadmap);
+		
+		// Necessary collections for A*
 		HashSet<Point> closed = new HashSet<Point>();
 		HashSet<Point> open = new HashSet<Point>();
 		HashMap<Point, Point> came_from = new HashMap<Point, Point>();
-		
 		HashMap<Point, Double> score = new HashMap<Point, Double>();
+
 		
-		score.put(pos, 0.0);
-		open.add(pos);
+		// If the start isn't in the roadmap...
+		// Add in the start node to our copied roadmap. Add in the closest node as a neighbor.
+		if(!this.roadmap.keySet().contains(start)) {
+			Point start_neighbor = findClosestRoadmapNode(start);
+			copymap.get(start_neighbor).add(start);
+			copymap.put(start, new HashSet<Point>());
+			copymap.get(start).add(start_neighbor);
+		}
+		
+		// Do the same for the end goal
+		if(!this.roadmap.keySet().contains(goal)) {
+			Point goal_neighbor = findClosestRoadmapNode(goal);
+			copymap.put(goal, new HashSet<Point>());
+			copymap.get(goal).add(goal_neighbor);
+		}
+		
+		
+		// Initialize the start node's score to 0, add it to the open set.
+		score.put(start, 0.0);
+		open.add(start);
+		
+		// Do A*
 		while(!open.isEmpty()) {
 			Point current = null;
 			double minimum = Double.MAX_VALUE;
@@ -89,6 +173,7 @@ public class Planner {
 				}
 			}
 			
+			// If we reach the end, generate the path we took to get there
 			if(current == goal) {
 				boolean done = false;
 				while(!done) {
@@ -104,9 +189,18 @@ public class Planner {
 							currName = entry.getKey();
 						}
 					}
-					//System.out.println(prevName + " --> " + currName);
+					if(prev == start) {
+						prevName = "Outside Map Start: " + start.toString();
+					} else if(currName.equals("")) {
+						currName = "Outside Map End: " + current.toString();
+					}
+					
+					if(DEBUG){
+						System.out.println(prevName + " --> " + currName);	
+					}
+					
 					this.drawEdge(prev, current);
-					if(prev == pos) {
+					if(prev == start) {
 						return current;
 					}
 					current = prev;
@@ -116,14 +210,14 @@ public class Planner {
 			open.remove(current);
 			closed.add(current);
 			
-			for(Point neighbor : roadmap.get(current)) {
+			// Handle neighbors
+			for(Point neighbor : copymap.get(current)) {
 				if(closed.contains(neighbor)) {
 					continue;
 				}
 				double tentative_score = score.get(current) + Math.sqrt(
 						((neighbor.x - current.x) * (neighbor.x - current.x)) + 
 						((neighbor.y - current.y) * (neighbor.y - current.y)));
-				System.out.println(tentative_score);
 				if(!open.contains(neighbor) || tentative_score < score.get(neighbor)) {
 					open.add(neighbor);
 					came_from.put(neighbor, current);
@@ -136,13 +230,15 @@ public class Planner {
 	}
 	
 	public void drawPoint(Point p) {
-		int col = 0xFF00FF00;
+		drawPoint(p, 0xFF00FF00);	
+	}
+	
+	public void drawPoint(Point p, int color) {
 		for(int i = 0; i < 7; i++) {
 			for(int j=0; j < 7; j++) {
-				pixels[p.y - (3 - i)][p.x - (3 - j)] = col;
+				pixels[p.y - (3 - i)][p.x - (3 - j)] = color;
 			}
 		}
-		refreshImage();
 	}
 	
 	public void drawEdge(Point src, Point dest) {
@@ -330,10 +426,65 @@ public class Planner {
 		this.painter.repaint();
 	}
 
+	public void setSimulationBoundaries() {
+		HashMap<Point, Point> b = this.boundaries;
+		addBoundaryEdge(335, 325, 1075, 325, b);
+		addBoundaryEdge(226, 192, 226, 440, b);
+		addBoundaryEdge(1167, 205, 1282, 205, b);
+		addBoundaryEdge(1345, 172, 1387, 172, b);
+		addBoundaryEdge(1387, 172, 1417, 337, b);
+		addBoundaryEdge(1525, 198, 1525, 580, b);
+		addBoundaryEdge(1650, 340, 1650, 457, b);
+		addBoundaryEdge(1650, 372, 1760, 372, b);
+		
+	}
+	
+	public void addBoundaryEdge(int x1, int y1, int x2, int y2, HashMap<Point, Point> b) {
+		//drawEdge(x1, y1, x2, y2);
+		b.put(new Point(x1, y1), new Point(x2, y2));
+	}
+	
+	public Point generateRandomPoint(Random random) {
+		boolean done = false;
+		int x = 0;
+		int y = 0;
+		while(!done) {
+			x = random.nextInt(1998);
+			y = random.nextInt(698);
+			
+			if(this.pixels[y][x] != 0xFFFFFFFF) {
+				continue;
+			}
+			done = true;
+		}
+		
+		return new Point(x, y);
+	}
+	
+	/**
+	 * Returns true if the proposed line intersects with a set of lines in a given map.
+	 */
+	public boolean lineClips(Point src, Point dest) {
+		
+		for(Point p : this.boundaries.keySet()) {
+			boolean intersects = java.awt.geom.Line2D.linesIntersect(
+					src.x, src.y, dest.x, dest.y, 
+					p.x, p.y, boundaries.get(p).x, boundaries.get(p).y);
+			if(intersects) { 
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
 	public static void main(String args[]) {
 		// Run this function if you want to see the roadmap.
 		Planner planner = new Planner();
-		System.out.println(planner.nextLocalWaypoint(null));
+		Planner.DEBUG = true;
+		planner.refreshImage();
+		System.out.println("Next roadmap point to go to: " + planner.nextLocalWaypoint(null));
 		planner.reveal();
 	}
 
