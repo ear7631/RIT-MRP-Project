@@ -140,12 +140,11 @@ public class Navigator {
         return distribution;
     }
 
-
     public static Point whereAreWe(LinkedList<Point> distribution) {
-        if (!sonar.isDataReady()) {
-            System.out.println("Waiting on laser");
-            return null;
-        }
+        do {
+            System.out.println("Waiting on ranger to localise");
+            pc.readAll();
+        } while(!sonar.isDataReady());
         double[] ranges = rangerToArr();
         
         double prob_tot = 0;
