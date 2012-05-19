@@ -137,7 +137,7 @@ public class Navigator {
                 x = (int)(rand.nextDouble() * map.width);
                 y = (int)(rand.nextDouble() * map.height);
             } while(!map.valid(x, y));
-            distribution.add(new Point(x, y, (double)1/K));
+            distribution.add(new Point(x, y, 0, (double)1/K));
             //System.out.printf("(%d, %d)", x, y);
         }
         return distribution;
@@ -219,7 +219,7 @@ public class Navigator {
         }
 
         // Return a guess if we have one, otherwise null
-        Point bestPoint = new Point(0, 0, 0);
+        Point bestPoint = new Point(0, 0);
         for(Point p : distribution) {
             //System.out.println(p.prob);
             if(p.prob > bestPoint.prob) {
