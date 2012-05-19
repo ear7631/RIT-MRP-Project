@@ -68,6 +68,7 @@ public class Navigator {
         
 		pos = pc.requestInterfacePosition2D(0,PlayerConstants.PLAYER_OPEN_MODE);
         sonar = pc.requestInterfaceSonar(0,PlayerConstants.PLAYER_OPEN_MODE);
+        pos.setMotorPower(1);
 
         Point offset = null;
         while(offset == null) {
@@ -93,16 +94,15 @@ public class Navigator {
 	}
 
     /**
-     * Wander for one tick.  This might get weird.
+     * Wander for one tick.
      */
     private static void safeWander() {
         double turnrate = 0, fwd = 0.2;
         double omega = 20*Math.PI/180; 
 
         pc.readAll();
-        pos.setMotorPower(1);
-
         if (!sonar.isDataReady()) {
+            System.out.println("Waiting on sonar");
             return;
         }
 
