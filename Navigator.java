@@ -33,7 +33,7 @@ public class Navigator {
     static final int K = 100;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
-    static final double PROB_THRESHOLD = 0.1;
+    static final double PROB_THRESHOLD = 0.005;
 
     public static void main(String[] args) {
 		String filename;
