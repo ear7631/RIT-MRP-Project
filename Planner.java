@@ -66,7 +66,11 @@ public class Planner {
 	}
 
 	public Point nextLocalWaypoint(Point goal) {
-		Point pos = Navigator.whereAreWe(Navigator.getNewDistribution());
+		Point pos = Navigator.whereAreWe(Navigator.distribution);
+		
+		HashSet<Point> closed = new HashSet<Point>();
+		HashSet<Point> open;
+		
 		return pos;
 	}
 	

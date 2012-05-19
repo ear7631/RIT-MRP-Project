@@ -26,6 +26,7 @@ public class Navigator {
 	static Position2DInterface pos;
 	static RangerInterface laser;
 	static SonarInterface sonar;
+	static LinkedList<Point> distribution;
 	static final double tolerance = 0.25;
     static final double[] sonar_yaw = {90, 50, 30, 10, -10, -30, -50, -90};
 
@@ -64,7 +65,7 @@ public class Navigator {
 			return;
 		}
 
-        LinkedList<Point> distribution = getNewDistribution();;
+        distribution = getNewDistribution();;
         
         Point offset = null;
         while(offset == null) {
