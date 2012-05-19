@@ -31,6 +31,7 @@ public class Navigator {
     static final double[] sonar_yaw = {90, 50, 30, 10, -10, -30, -50, -90};
     static double lastx = 0;
     static double lasty = 0;
+    static double lastyaw = 0;
 
     // Number of points in particle cloud
     static final int K = 100;
@@ -153,12 +154,14 @@ public class Navigator {
         double[] ranges = rangerToArr();
         double currx = pos.getX();
         double curry = pos.getY();
+        double curryaw = pos.getYaw();
         
         double prob_tot = 0;
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
             p.x += (int)lastx - currx;
             p.y += (int)lasty - curry;
+            p.yaw += lastyaw - curryaw;
 
             //scale likelihood to map
             int[] cardinalValues = map.checkHere(p);
@@ -176,6 +179,7 @@ public class Navigator {
         }
         lastx = currx;
         lasty = curry;
+        lastyaw = curryaw;
         // Scale probabilities to 1
         for(Point p : distribution) {
             p.prob /= prob_tot;
