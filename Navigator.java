@@ -106,11 +106,14 @@ public class Navigator {
         } while(!sonar.isDataReady());
 
         double[] ranges = rangerToArr();
+        double left = (ranges[4] + ranges[5]) / 2;
+        double front = (ranges[2] + ranges[3]) / 2;
+        double right = (ranges[0] + ranges[1]) / 2;
         
-        if (ranges[1] < 0.5) {
+        if (front < 0.5) {
             // Oh god we're going to crash
             fwd = 0;
-            if (ranges[0] < ranges[2]) {
+            if (left < right) {
                 //Turn to the right
                 turnrate = -1*omega;
             } else {
@@ -119,9 +122,9 @@ public class Navigator {
             }
         } else {
             fwd = 0.25;
-            if (ranges[0] < 1.0) {
+            if (left < 1.0) {
                 turnrate = -1*omega;
-            } else if (ranges[2] < 1.0) {
+            } else if (right < 1.0) {
                 turnrate = omega;
             }
         }
@@ -236,18 +239,18 @@ public class Navigator {
     private static double[] rangerToArr() {
         //double[] ranges = laser.getData().getRanges();
         float[] ranges = sonar.getData().getRanges();
-        double[] retval = new double[3];
+        double[] retVal = new double[8];
         
         /* Ranger values!
-        retval[0] = (ranges[85]+ranges[90]) / 2.0;
-        retval[1] = (ranges[592]+ranges[597]) / 2.0;
-        retval[2] = (ranges[340]+ranges[345]) / 2.0;
+        retVal[0] = (ranges[85]+ranges[90]) / 2.0;
+        retVal[1] = (ranges[592]+ranges[597]) / 2.0;
+        retVal[2] = (ranges[340]+ranges[345]) / 2.0;
         */
         /* Sonar values! */
-        retval[0] = (ranges[1]+ranges[2]) / 2.0;
-        retval[1] = (ranges[3]+ranges[4]) / 2.0;
-        retval[2] = (ranges[5]+ranges[6]) / 2.0;
+        for(int i=0; i<8; i++) {
+            retVal[i] = ranges[i];
+        }
 
-        return retval;
+        return retVal;
     }
 }

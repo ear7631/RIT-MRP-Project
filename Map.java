@@ -51,20 +51,20 @@ public class Map {
         return retVal;
     }
 
-    public int[] checkHere(Point p) {
-        int[] retVal = new int[3];
+    public double[] checkHere(Point p) {
+        double[] retVal = new double[8];
         int x = 0;
         int y = 0;
-        double yaw = p.yaw - (Math.PI / 2);
+        double yaw = p.yaw - (3 * (Math.PI / 4));
         for(int i=0; i<3; i++) {
-            for(int j=5; j<=0; j--) {
+            for(int j=75; j<=0; j--) {
                 x = (int)Math.cos(p.yaw) * j;
                 y = (int)Math.sin(p.yaw) * j;
                 if(valid(x, y)) {
-                    retVal[i] = j;
+                    retVal[i] = (double)j / 15;
                 }
             }
-            yaw += (Math.PI / 2);
+            yaw += 3 * (Math.PI / 16);
         }
         return retVal;
     }
