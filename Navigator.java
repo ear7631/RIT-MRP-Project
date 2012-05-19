@@ -133,11 +133,13 @@ public class Navigator {
         for(int i = 0; i < K; i++) {
             int x = 0;
             int y = 0;
+            double yaw = 0;
             do {
                 x = (int)(rand.nextDouble() * map.width);
                 y = (int)(rand.nextDouble() * map.height);
+                yaw = rand.nextDouble() * (2 * Math.PI) - (2 * Math.PI);
             } while(!map.valid(x, y));
-            distribution.add(new Point(x, y, 0, (double)1/K));
+            distribution.add(new Point(x, y, yaw, (double)1/K));
             //System.out.printf("(%d, %d)", x, y);
         }
         return distribution;
