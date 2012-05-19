@@ -73,7 +73,6 @@ public class Navigator {
                 y = (int)(rand.nextDouble() * map.height);
             } while(!map.valid(x, y));
             distribution.add(new Point(x, y, (double)1/K));
-            //System.out.printf("(%d, %d)", x, y);
         }
         
         Point offset = null;
