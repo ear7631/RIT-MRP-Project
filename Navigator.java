@@ -34,6 +34,7 @@ public class Navigator {
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
     static final double PROB_THRESHOLD = 0.005;
+    static final double LOC_THRESHOLD = 0.1;
 
     public static void main(String[] args) {
 		String filename;
@@ -136,13 +137,17 @@ public class Navigator {
 
     private static Point whereAreWe(LinkedList<Point> distribution) {
         double prob_tot = 0;
+        LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
             //scale likelihood to map.. somehow
             if(p.prob < PROB_THRESHOLD) {
-                distribution.remove(p);
-            } else {
-                prob_tot += p.prob;
+                toRemove.add(p);
             }
+            prob_tot += p.prob;
+        }
+        // Out of loop to avoid ConcurrentModificationException
+        for(Point p : toRemove) {
+            distribution.remove(p);
         }
         // Scale probabilities to 1
         for(Point p : distribution) {
