@@ -68,8 +68,8 @@ public class Navigator {
         }
         
 		pos = pc.requestInterfacePosition2D(0,PlayerConstants.PLAYER_OPEN_MODE);
-        sonar = pc.requestInterfaceSonar(0,PlayerConstants.PLAYER_OPEN_MODE);
         pos.setMotorPower(1);
+        laser = pc.requestInterfaceRanger(0,PlayerConstants.PLAYER_OPEN_MODE);
 
         Point offset = null;
         while(offset == null) {
@@ -102,21 +102,16 @@ public class Navigator {
         double omega = 20*Math.PI/180; 
 
         pc.readAll();
-        if (!sonar.isDataReady()) {
-            System.out.println("Waiting on sonar");
+        if (!laser.isDataReady()) {
+            System.out.println("Waiting on laser");
             return;
         }
-
-        float[] ranges = sonar.getData().getRanges();
+        double[] ranges = rangerToArr();
         
-        double leftval =  (ranges[1]+ranges[2]) / 2.0;
-        double frontval = (ranges[3]+ranges[4]) / 2.0;
-        double rightval = (ranges[5]+ranges[6]) / 2.0;
-
-        if (frontval < 0.5) {
+        if (ranges[1] < 0.5) {
             // Oh god we're going to crash
             fwd = 0;
-            if (leftval < rightval) {
+            if (ranges[0] < ranges[2]) {
                 //Turn to the right
                 turnrate = -1*omega;
             } else {
@@ -125,9 +120,9 @@ public class Navigator {
             }
         } else {
             fwd = 0.25;
-            if (leftval < 1.0) {
+            if (ranges[0] < 1.0) {
                 turnrate = -1*omega;
-            } else if (rightval < 1.0) {
+            } else if (ranges[2] < 1.0) {
                 turnrate = omega;
             }
         }
@@ -192,5 +187,22 @@ public class Navigator {
         } else {
             return null;
         }
+    }
+
+    private static double[] rangerToArr() {
+        double[] ranges = laser.getData().getRanges();
+        //float[] ranges = sonar.getData().getRanges();
+        double[] retval = new double[3];
+        
+        // Ranger values!
+        retval[0] = (ranges[85]+ranges[90]) / 2.0;
+        retval[1] = (ranges[592]+ranges[597]) / 2.0;
+        retval[2] = (ranges[340]+ranges[345]) / 2.0;
+        // Sonar values!
+        //retval[0] = (ranges[1]+ranges[2]) / 2.0;
+        //retval[0] = (ranges[3]+ranges[4]) / 2.0;
+        //retval[0] = (ranges[5]+ranges[6]) / 2.0;
+
+        return retval;
     }
 }
