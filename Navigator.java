@@ -78,7 +78,7 @@ public class Navigator {
             Point p = whereAreWe(distribution);
             offset = p;
         }
-        System.out.printf("I think we're at %s\n", offset);
+        System.out.printf("I *really* think we're at %s\n", offset);
 
         // Translate the offset by where we think we are now.
         offset.x -= pos.getX();
