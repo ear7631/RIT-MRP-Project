@@ -28,12 +28,14 @@ public class Navigator {
 	static SonarInterface sonar;
 	static final double tolerance = 0.25;
     static final double[] sonar_yaw = {90, 50, 30, 10, -10, -30, -50, -90};
+    static double lastx = 0;
+    static double lasty = 0;
 
     // Number of points in particle cloud
     static final int K = 100;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
-    static final double PROB_THRESHOLD = 0.005;
+    static final double PROB_THRESHOLD = 0.007;
     static final double LOC_THRESHOLD = 0.1;
 
     public static void main(String[] args) {
@@ -146,10 +148,15 @@ public class Navigator {
             pc.readAll();
         } while(!sonar.isDataReady());
         double[] ranges = rangerToArr();
+        double currx = pos.getX();
+        double curry = pos.getY();
         
         double prob_tot = 0;
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
+            p.x += (int)lastx - currx;
+            p.y += (int)lasty - curry;
+
             //scale likelihood to map
             int[] cardinalValues = map.checkHere(p);
             double guess = Integer.MAX_VALUE;
@@ -164,6 +171,12 @@ public class Navigator {
             }
             prob_tot += p.prob;
         }
+        lastx = currx;
+        lasty = curry;
+        // Scale probabilities to 1
+        for(Point p : distribution) {
+            p.prob /= prob_tot;
+        }
         for(Point p : distribution) {
             if(p.prob < PROB_THRESHOLD) {
                 toRemove.add(p);
@@ -174,6 +187,7 @@ public class Navigator {
         for(Point p : toRemove) {
             distribution.remove(p);
         }
+
         // Scale probabilities to 1
         for(Point p : distribution) {
             p.prob /= prob_tot;
@@ -206,12 +220,14 @@ public class Navigator {
         // Return a guess if we have one, otherwise null
         Point bestPoint = new Point(0, 0, 0);
         for(Point p : distribution) {
+            //System.out.println(p.prob);
             if(p.prob > bestPoint.prob) {
                 bestPoint = p;
             }
         }
         System.out.printf("I think we're at %s\n", bestPoint);
         if(bestPoint.prob > LOC_THRESHOLD) {
+            System.out.println(bestPoint.prob);
             return bestPoint;
         } else {
             return null;
