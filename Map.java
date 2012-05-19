@@ -31,7 +31,6 @@ public class Map {
     }
 
     public boolean valid(int x, int y) {
-        //System.out.printf("Calling valid on (%d, %d)\n", x, y);
         return this.map[x][y] == 255;
     }
 
