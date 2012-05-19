@@ -36,15 +36,19 @@ public class Map {
     }
 
     public int[] checkHere(Point p) {
-        int[] retVal = new int[4];
-        for(int i=0; i<4; i++) {
-            int x = i/2==0 ? (i%2==0 ? -5 : 5) : 0;
-            int y = i/2==1 ? (i%2==0 ? -5 : 5) : 0;
-            while(!valid(p.x+x, p.y+y)) {
-                x = x<0 ? x+1 : x>0 ? x-1 : x;
-                y = y<0 ? y+1 : y>0 ? y-1 : y;
+        int[] retVal = new int[3];
+        int x = 0;
+        int y = 0;
+        double yaw = p.yaw - (Math.PI / 2);
+        for(int i=0; i<3; i++) {
+            for(int j=5; j<=0; j--) {
+                x = (int)Math.cos(p.yaw) * j;
+                y = (int)Math.sin(p.yaw) * j;
+                if(valid(x, y)) {
+                    retVal[i] = j;
+                }
             }
-            retVal[i] = Math.abs(x+y);
+            yaw += (Math.PI / 2);
         }
         return retVal;
     }
