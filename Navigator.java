@@ -131,14 +131,33 @@ public class Navigator {
     }
 
     private static Point whereAreWe(LinkedList<Point> distribution) {
+        if (!laser.isDataReady()) {
+            System.out.println("Waiting on laser");
+            return null;
+        }
+        double[] ranges = rangerToArr();
+        
         double prob_tot = 0;
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
-            //scale likelihood to map.. somehow
+            //scale likelihood to map
+            int[] cardinalValues = map.checkHere(p);
+            double guess = Integer.MAX_VALUE;
+            for(int i=0; i<cardinalValues.length; i++) {
+                double left = cardinalValues[i] - ranges[0];
+                double front = cardinalValues[(i+1)%4] - ranges[1];
+                double right = cardinalValues[(i+2)%4] - ranges[2];
+                double current = Math.sqrt(left*left + front*front + right*right);
+                if(current < guess) {
+                    guess = current;
+                }
+            }
+            prob_tot += p.prob;
+        }
+        for(Point p : distribution) {
             if(p.prob < PROB_THRESHOLD) {
                 toRemove.add(p);
             }
-            prob_tot += p.prob;
         }
         System.out.printf("Removing %d particles.\n", toRemove.size());
         // Out of loop to avoid ConcurrentModificationException
