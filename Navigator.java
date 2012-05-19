@@ -156,34 +156,25 @@ public class Navigator {
         double curry = pos.getY();
         double curryaw = pos.getYaw();
         
-        double prob_tot = 0;
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
-            p.x += (int)lastx - currx;
-            p.y += (int)lasty - curry;
+            int[] translated = Map.robotToMap(lastx - currx, lasty - curry);
+            p.x += translated[0];
+            p.y += translated[1];
             p.yaw += lastyaw - curryaw;
 
             //scale likelihood to map
-            int[] cardinalValues = map.checkHere(p);
-            double guess = Integer.MAX_VALUE;
-            for(int i=0; i<cardinalValues.length; i++) {
-                double left = cardinalValues[i] - ranges[0];
-                double front = cardinalValues[(i+1)%4] - ranges[1];
-                double right = cardinalValues[(i+2)%4] - ranges[2];
-                double current = Math.sqrt(left*left + front*front + right*right);
-                if(current < guess) {
-                    guess = current;
-                }
+            double[] readings = map.checkHere(p);
+            double distance = 0;
+            for(int i=0; i<readings.length; i++) {
+                distance += Math.abs(readings[i] - ranges[i]);
             }
-            prob_tot += p.prob;
+            p.prob = 1 - distance;
         }
         lastx = currx;
         lasty = curry;
         lastyaw = curryaw;
-        // Scale probabilities to 1
-        for(Point p : distribution) {
-            p.prob /= prob_tot;
-        }
+        distribution = scale(distribution);
         for(Point p : distribution) {
             if(p.prob < PROB_THRESHOLD || map.valid(p)) {
                 toRemove.add(p);
@@ -195,13 +186,9 @@ public class Navigator {
             distribution.remove(p);
         }
 
-        // Scale probabilities to 1
-        for(Point p : distribution) {
-            p.prob /= prob_tot;
-        }
-
         // Make some new points for all the ones we took out
         LinkedList<Point> additions = new LinkedList<Point>();
+        distribution = scale(distribution);
         while(distribution.size() < K) {
             double temp_tot = 0;
             double target = rand.nextDouble();
@@ -217,17 +204,11 @@ public class Navigator {
 
         // Add the new points and scale again
         for(Point p : additions) {
-            prob_tot += p.prob;
             distribution.add(p);
         }
-        for(Point p : distribution) {
-            p.prob /= prob_tot;
-        }
-
-        // Return a guess if we have one, otherwise null
+        distribution = scale(distribution);
         Point bestPoint = new Point(0, 0);
         for(Point p : distribution) {
-            //System.out.println(p.prob);
             if(p.prob > bestPoint.prob) {
                 bestPoint = p;
             }
@@ -239,6 +220,17 @@ public class Navigator {
         } else {
             return null;
         }
+    }
+
+    private static LinkedList<Point> scale(LinkedList<Point> distribution) {
+        double total = 0;
+        for(Point p : distribution) {
+            total += p.prob;
+        }
+        for(Point p : distribution) {
+            p.prob /= total * K;
+        }
+        return distribution;
     }
 
     private static double[] rangerToArr() {
