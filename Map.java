@@ -34,6 +34,19 @@ public class Map {
         return this.map[x][y] == 255;
     }
 
+    public static int[] robotToMap(double x, double y){
+        int[] retVal = new int[2];
+        retVal[0] = (int)x * 15;
+        retVal[1] = (int)y * 15;
+        return retVal;
+    }
+    public static double[] mapToRobot(int x, int y){
+        double[] retVal = new double[2];
+        retVal[0] = (double)x / 15;
+        retVal[1] = (double)y / 15;
+        return retVal;
+    }
+
     public int[] checkHere(Point p) {
         int[] retVal = new int[3];
         int x = 0;
