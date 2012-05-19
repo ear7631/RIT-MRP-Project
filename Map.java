@@ -34,6 +34,10 @@ public class Map {
         return this.map[x][y] == 255;
     }
 
+    public boolean valid(Point p) {
+        return this.valid(p.x, p.y);
+    }
+
     public static int[] robotToMap(double x, double y){
         int[] retVal = new int[2];
         retVal[0] = (int)x * 15;
