@@ -145,6 +145,7 @@ public class Navigator {
             }
             prob_tot += p.prob;
         }
+        System.out.printf("Removing %d particles.\n", toRemove.size());
         // Out of loop to avoid ConcurrentModificationException
         for(Point p : toRemove) {
             distribution.remove(p);
@@ -167,6 +168,7 @@ public class Navigator {
                 }
             }
         }
+        System.out.printf("Adding %d particles back.\n", additions.size());
 
         // Add the new points and scale again
         for(Point p : additions) {
@@ -178,7 +180,17 @@ public class Navigator {
         }
 
         // Return a guess if we have one, otherwise null
-        return null;
+        Point bestPoint = new Point(0, 0, 0);
+        for(Point p : distribution) {
+            if(p.prob > bestPoint.prob) {
+                bestPoint = p;
+            }
+        }
+        System.out.printf("I think we're at %s\n", bestPoint);
+        if(bestPoint.prob > LOC_THRESHOLD) {
+            return bestPoint;
+        } else {
+            return null;
+        }
     }
 }
-
