@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 
 
 public class Planner {
@@ -60,18 +61,78 @@ public class Planner {
 		for(Point p : this.roadmap.keySet()) {
 			HashSet<Point> neighbors = this.roadmap.get(p);
 			for(Point neighbor : neighbors) {
-				this.drawEdge(p, neighbor);
+				continue;//this.drawEdge(p, neighbor);
 			}
 		}
 	}
 
 	public Point nextLocalWaypoint(Point goal) {
-		Point pos = Navigator.whereAreWe(Navigator.distribution);
+		System.out.println("Begin Algorithm.");
+		goal = this.points.get("C1");
+		Point pos = this.points.get("H0"); //Navigator.whereAreWe(Navigator.distribution);
 		
 		HashSet<Point> closed = new HashSet<Point>();
-		HashSet<Point> open;
+		HashSet<Point> open = new HashSet<Point>();
+		HashMap<Point, Point> came_from = new HashMap<Point, Point>();
 		
-		return pos;
+		HashMap<Point, Double> score = new HashMap<Point, Double>();
+		
+		score.put(pos, 0.0);
+		open.add(pos);
+		while(!open.isEmpty()) {
+			Point current = null;
+			double minimum = Double.MAX_VALUE;
+			for(Point candidate : open) {
+				if(score.get(candidate) < minimum) {
+					current = candidate;
+					minimum = score.get(candidate);
+				}
+			}
+			
+			if(current == goal) {
+				boolean done = false;
+				while(!done) {
+					Point prev = came_from.get(current);
+					String prevName = "";
+					String currName = "";
+					
+					for(Entry<String, Point> entry : this.points.entrySet()) {
+						if(entry.getValue() == prev) {
+							prevName = entry.getKey();
+						}
+						if(entry.getValue() == current) {
+							currName = entry.getKey();
+						}
+					}
+					//System.out.println(prevName + " --> " + currName);
+					this.drawEdge(prev, current);
+					if(prev == pos) {
+						return current;
+					}
+					current = prev;
+				}
+			}
+			
+			open.remove(current);
+			closed.add(current);
+			
+			for(Point neighbor : roadmap.get(current)) {
+				if(closed.contains(neighbor)) {
+					continue;
+				}
+				double tentative_score = score.get(current) + Math.sqrt(
+						((neighbor.x - current.x) * (neighbor.x - current.x)) + 
+						((neighbor.y - current.y) * (neighbor.y - current.y)));
+				System.out.println(tentative_score);
+				if(!open.contains(neighbor) || tentative_score < score.get(neighbor)) {
+					open.add(neighbor);
+					came_from.put(neighbor, current);
+					score.put(neighbor, tentative_score);
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	public void drawPoint(Point p) {
@@ -272,6 +333,7 @@ public class Planner {
 	public static void main(String args[]) {
 		// Run this function if you want to see the roadmap.
 		Planner planner = new Planner();
+		System.out.println(planner.nextLocalWaypoint(null));
 		planner.reveal();
 	}
 
