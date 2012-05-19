@@ -64,6 +64,11 @@ public class Planner {
 			}
 		}
 	}
+
+	public Point nextLocalWaypoint(Point goal) {
+		Point pos = Navigator.whereAreWe(Navigator.getNewDistribution());
+		return pos;
+	}
 	
 	public void drawPoint(Point p) {
 		int col = 0xFF00FF00;

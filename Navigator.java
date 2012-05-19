@@ -55,17 +55,7 @@ public class Navigator {
 			return;
 		}
 
-        LinkedList<Point> distribution = new LinkedList<Point>();
-        for(int i = 0; i < K; i++) {
-            int x = 0;
-            int y = 0;
-            do {
-                x = (int)(rand.nextDouble() * map.width);
-                y = (int)(rand.nextDouble() * map.height);
-            } while(!map.valid(x, y));
-            distribution.add(new Point(x, y, (double)1/K));
-            //System.out.printf("(%d, %d)", x, y);
-        }
+        LinkedList<Point> distribution = getNewDistribution();
         
 		pos = pc.requestInterfacePosition2D(0,PlayerConstants.PLAYER_OPEN_MODE);
         pos.setMotorPower(1);
@@ -129,8 +119,23 @@ public class Navigator {
         
         pos.setSpeed(fwd,turnrate);
     }
+    
+    public static LinkedList<Point> getNewDistribution() {
+    	LinkedList<Point> distribution = new LinkedList<Point>();
+        for(int i = 0; i < K; i++) {
+            int x = 0;
+            int y = 0;
+            do {
+                x = (int)(rand.nextDouble() * map.width);
+                y = (int)(rand.nextDouble() * map.height);
+            } while(!map.valid(x, y));
+            distribution.add(new Point(x, y, (double)1/K));
+            //System.out.printf("(%d, %d)", x, y);
+        }
+        return distribution;
+    }
 
-    private static Point whereAreWe(LinkedList<Point> distribution) {
+    public static Point whereAreWe(LinkedList<Point> distribution) {
         if (!laser.isDataReady()) {
             System.out.println("Waiting on laser");
             return null;
