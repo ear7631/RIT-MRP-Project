@@ -13,4 +13,7 @@ public class Point {
         this.y = p.y;
         this.prob = p.prob;
     }
+    public String toString() {
+        return "(" + this.x + ", " + this.y + ")";
+    }
 }
