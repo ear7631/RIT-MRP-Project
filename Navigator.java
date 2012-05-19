@@ -37,8 +37,8 @@ public class Navigator {
     static final int K = 100;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
-    static final double PROB_THRESHOLD = 0.007;
-    static final double LOC_THRESHOLD = 0.1;
+    static final double PROB_THRESHOLD = 1.0 / (2 * K);
+    static final double LOC_THRESHOLD = 0.3;
 
     public static void main(String[] args) {
 		String filename;
@@ -78,7 +78,7 @@ public class Navigator {
             Point p = whereAreWe(distribution);
             offset = p;
         }
-        System.out.printf("I think we're at %s\n", offset);
+        System.out.printf("I *really* think we're at %s\n", offset);
 
         // Translate the offset by where we think we are now.
         offset.x -= pos.getX();
@@ -106,11 +106,14 @@ public class Navigator {
         } while(!sonar.isDataReady());
 
         double[] ranges = rangerToArr();
+        double left = (ranges[4] + ranges[5]) / 2;
+        double front = (ranges[2] + ranges[3]) / 2;
+        double right = (ranges[0] + ranges[1]) / 2;
         
-        if (ranges[1] < 0.5) {
+        if (front < 0.5) {
             // Oh god we're going to crash
             fwd = 0;
-            if (ranges[0] < ranges[2]) {
+            if (left < right) {
                 //Turn to the right
                 turnrate = -1*omega;
             } else {
@@ -119,9 +122,9 @@ public class Navigator {
             }
         } else {
             fwd = 0.25;
-            if (ranges[0] < 1.0) {
+            if (left < 1.0) {
                 turnrate = -1*omega;
-            } else if (ranges[2] < 1.0) {
+            } else if (right < 1.0) {
                 turnrate = omega;
             }
         }
@@ -156,36 +159,27 @@ public class Navigator {
         double curry = pos.getY();
         double curryaw = pos.getYaw();
         
-        double prob_tot = 0;
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
-            p.x += (int)lastx - currx;
-            p.y += (int)lasty - curry;
+            int[] translated = Map.robotToMap(lastx - currx, lasty - curry);
+            p.x += translated[0];
+            p.y += translated[1];
             p.yaw += lastyaw - curryaw;
 
             //scale likelihood to map
-            int[] cardinalValues = map.checkHere(p);
-            double guess = Integer.MAX_VALUE;
-            for(int i=0; i<cardinalValues.length; i++) {
-                double left = cardinalValues[i] - ranges[0];
-                double front = cardinalValues[(i+1)%4] - ranges[1];
-                double right = cardinalValues[(i+2)%4] - ranges[2];
-                double current = Math.sqrt(left*left + front*front + right*right);
-                if(current < guess) {
-                    guess = current;
-                }
+            double[] readings = map.checkHere(p);
+            double distance = 0;
+            for(int i=0; i<readings.length; i++) {
+                distance += Math.abs(readings[i] - ranges[i]);
             }
-            prob_tot += p.prob;
+            p.prob = 1 - distance;
         }
         lastx = currx;
         lasty = curry;
         lastyaw = curryaw;
-        // Scale probabilities to 1
+        distribution = scale(distribution);
         for(Point p : distribution) {
-            p.prob /= prob_tot;
-        }
-        for(Point p : distribution) {
-            if(p.prob < PROB_THRESHOLD) {
+            if(p.prob < PROB_THRESHOLD || map.valid(p)) {
                 toRemove.add(p);
             }
         }
@@ -195,13 +189,12 @@ public class Navigator {
             distribution.remove(p);
         }
 
-        // Scale probabilities to 1
-        for(Point p : distribution) {
-            p.prob /= prob_tot;
-        }
-
         // Make some new points for all the ones we took out
         LinkedList<Point> additions = new LinkedList<Point>();
+        if(distribution.size() == 0) {
+            distribution = getNewDistribution();
+        }
+        distribution = scale(distribution);
         while(distribution.size() < K) {
             double temp_tot = 0;
             double target = rand.nextDouble();
@@ -217,17 +210,11 @@ public class Navigator {
 
         // Add the new points and scale again
         for(Point p : additions) {
-            prob_tot += p.prob;
             distribution.add(p);
         }
-        for(Point p : distribution) {
-            p.prob /= prob_tot;
-        }
-
-        // Return a guess if we have one, otherwise null
+        distribution = scale(distribution);
         Point bestPoint = new Point(0, 0);
         for(Point p : distribution) {
-            //System.out.println(p.prob);
             if(p.prob > bestPoint.prob) {
                 bestPoint = p;
             }
@@ -241,21 +228,32 @@ public class Navigator {
         }
     }
 
+    private static LinkedList<Point> scale(LinkedList<Point> distribution) {
+        double total = 0;
+        for(Point p : distribution) {
+            total += p.prob;
+        }
+        for(Point p : distribution) {
+            p.prob /= total * K;
+        }
+        return distribution;
+    }
+
     private static double[] rangerToArr() {
         //double[] ranges = laser.getData().getRanges();
         float[] ranges = sonar.getData().getRanges();
-        double[] retval = new double[3];
+        double[] retVal = new double[8];
         
         /* Ranger values!
-        retval[0] = (ranges[85]+ranges[90]) / 2.0;
-        retval[1] = (ranges[592]+ranges[597]) / 2.0;
-        retval[2] = (ranges[340]+ranges[345]) / 2.0;
+        retVal[0] = (ranges[85]+ranges[90]) / 2.0;
+        retVal[1] = (ranges[592]+ranges[597]) / 2.0;
+        retVal[2] = (ranges[340]+ranges[345]) / 2.0;
         */
         /* Sonar values! */
-        retval[0] = (ranges[1]+ranges[2]) / 2.0;
-        retval[1] = (ranges[3]+ranges[4]) / 2.0;
-        retval[2] = (ranges[5]+ranges[6]) / 2.0;
+        for(int i=0; i<8; i++) {
+            retVal[i] = ranges[i];
+        }
 
-        return retval;
+        return retVal;
     }
 }

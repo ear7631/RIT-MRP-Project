@@ -31,24 +31,40 @@ public class Map {
     }
 
     public boolean valid(int x, int y) {
-        //System.out.printf("Calling valid on (%d, %d)\n", x, y);
         return this.map[x][y] == 255;
     }
 
-    public int[] checkHere(Point p) {
-        int[] retVal = new int[3];
+    public boolean valid(Point p) {
+        return this.valid(p.x, p.y);
+    }
+
+    public static int[] robotToMap(double x, double y){
+        int[] retVal = new int[2];
+        retVal[0] = (int)x * 15;
+        retVal[1] = (int)y * 15;
+        return retVal;
+    }
+    public static double[] mapToRobot(int x, int y){
+        double[] retVal = new double[2];
+        retVal[0] = (double)x / 15;
+        retVal[1] = (double)y / 15;
+        return retVal;
+    }
+
+    public double[] checkHere(Point p) {
+        double[] retVal = new double[8];
         int x = 0;
         int y = 0;
-        double yaw = p.yaw - (Math.PI / 2);
+        double yaw = p.yaw - (3 * (Math.PI / 4));
         for(int i=0; i<3; i++) {
-            for(int j=5; j<=0; j--) {
+            for(int j=75; j<=0; j--) {
                 x = (int)Math.cos(p.yaw) * j;
                 y = (int)Math.sin(p.yaw) * j;
                 if(valid(x, y)) {
-                    retVal[i] = j;
+                    retVal[i] = (double)j / 15;
                 }
             }
-            yaw += (Math.PI / 2);
+            yaw += 3 * (Math.PI / 16);
         }
         return retVal;
     }
