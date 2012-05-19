@@ -8,6 +8,11 @@ public class Point {
         this.y = y;
         this.prob = prob;
     }
+    
+    public Point(int x, int y) {
+    	this(x, y, 0);
+    }
+    
     public Point(Point p) {
         this.x = p.x;
         this.y = p.y;
