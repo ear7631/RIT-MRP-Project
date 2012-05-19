@@ -33,7 +33,8 @@ public class Navigator {
     static final int K = 100;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
-    static final double PROB_THRESHOLD = 0.1;
+    static final double PROB_THRESHOLD = 0.005;
+    static final double LOC_THRESHOLD = 0.1;
 
     public static void main(String[] args) {
 		String filename;
@@ -62,24 +63,23 @@ public class Navigator {
                 x = (int)(rand.nextDouble() * map.width);
                 y = (int)(rand.nextDouble() * map.height);
             } while(!map.valid(x, y));
-            distribution.add(new Point(x, y, 1/K));
+            distribution.add(new Point(x, y, (double)1/K));
             //System.out.printf("(%d, %d)", x, y);
         }
         
 		pos = pc.requestInterfacePosition2D(0,PlayerConstants.PLAYER_OPEN_MODE);
-        sonar = pc.requestInterfaceSonar(0,PlayerConstants.PLAYER_OPEN_MODE);
+        pos.setMotorPower(1);
+        laser = pc.requestInterfaceRanger(0,PlayerConstants.PLAYER_OPEN_MODE);
 
-        Point offset;
-        while(true) {
-            //figure out where we are
+        Point offset = null;
+        while(offset == null) {
             safeWander();
+            System.out.println("Trying to find where we are...");
+            //figure out where we are
             Point p = whereAreWe(distribution);
-            if(p != null) {
-                //I think we know where we are in the map.
-                offset = new Point(p);
-                break;
-            }
+            offset = p;
         }
+        System.out.printf("I think we're at %s\n", offset);
 
         // Translate the offset by where we think we are now.
         offset.x -= pos.getX();
@@ -95,29 +95,23 @@ public class Navigator {
 	}
 
     /**
-     * Wander for one tick.  This might get weird.
+     * Wander for one tick.
      */
     private static void safeWander() {
         double turnrate = 0, fwd = 0.2;
         double omega = 20*Math.PI/180; 
 
         pc.readAll();
-        pos.setMotorPower(1);
-
-        if (!sonar.isDataReady()) {
+        if (!laser.isDataReady()) {
+            System.out.println("Waiting on laser");
             return;
         }
-
-        float[] ranges = sonar.getData().getRanges();
+        double[] ranges = rangerToArr();
         
-        double leftval =  (ranges[1]+ranges[2]) / 2.0;
-        double frontval = (ranges[3]+ranges[4]) / 2.0;
-        double rightval = (ranges[5]+ranges[6]) / 2.0;
-
-        if (frontval < 0.5) {
+        if (ranges[1] < 0.5) {
             // Oh god we're going to crash
             fwd = 0;
-            if (leftval < rightval) {
+            if (ranges[0] < ranges[2]) {
                 //Turn to the right
                 turnrate = -1*omega;
             } else {
@@ -126,9 +120,9 @@ public class Navigator {
             }
         } else {
             fwd = 0.25;
-            if (leftval < 1.0) {
+            if (ranges[0] < 1.0) {
                 turnrate = -1*omega;
-            } else if (rightval < 1.0) {
+            } else if (ranges[2] < 1.0) {
                 turnrate = omega;
             }
         }
@@ -137,14 +131,38 @@ public class Navigator {
     }
 
     private static Point whereAreWe(LinkedList<Point> distribution) {
+        if (!laser.isDataReady()) {
+            System.out.println("Waiting on laser");
+            return null;
+        }
+        double[] ranges = rangerToArr();
+        
         double prob_tot = 0;
+        LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
-            //scale likelihood to map.. somehow
-            if(p.prob < PROB_THRESHOLD) {
-                distribution.remove(p);
-            } else {
-                prob_tot += p.prob;
+            //scale likelihood to map
+            int[] cardinalValues = map.checkHere(p);
+            double guess = Integer.MAX_VALUE;
+            for(int i=0; i<cardinalValues.length; i++) {
+                double left = cardinalValues[i] - ranges[0];
+                double front = cardinalValues[(i+1)%4] - ranges[1];
+                double right = cardinalValues[(i+2)%4] - ranges[2];
+                double current = Math.sqrt(left*left + front*front + right*right);
+                if(current < guess) {
+                    guess = current;
+                }
             }
+            prob_tot += p.prob;
+        }
+        for(Point p : distribution) {
+            if(p.prob < PROB_THRESHOLD) {
+                toRemove.add(p);
+            }
+        }
+        System.out.printf("Removing %d particles.\n", toRemove.size());
+        // Out of loop to avoid ConcurrentModificationException
+        for(Point p : toRemove) {
+            distribution.remove(p);
         }
         // Scale probabilities to 1
         for(Point p : distribution) {
@@ -164,6 +182,7 @@ public class Navigator {
                 }
             }
         }
+        System.out.printf("Adding %d particles back.\n", additions.size());
 
         // Add the new points and scale again
         for(Point p : additions) {
@@ -175,7 +194,34 @@ public class Navigator {
         }
 
         // Return a guess if we have one, otherwise null
-        return null;
+        Point bestPoint = new Point(0, 0, 0);
+        for(Point p : distribution) {
+            if(p.prob > bestPoint.prob) {
+                bestPoint = p;
+            }
+        }
+        System.out.printf("I think we're at %s\n", bestPoint);
+        if(bestPoint.prob > LOC_THRESHOLD) {
+            return bestPoint;
+        } else {
+            return null;
+        }
+    }
+
+    private static double[] rangerToArr() {
+        double[] ranges = laser.getData().getRanges();
+        //float[] ranges = sonar.getData().getRanges();
+        double[] retval = new double[3];
+        
+        // Ranger values!
+        retval[0] = (ranges[85]+ranges[90]) / 2.0;
+        retval[1] = (ranges[592]+ranges[597]) / 2.0;
+        retval[2] = (ranges[340]+ranges[345]) / 2.0;
+        // Sonar values!
+        //retval[0] = (ranges[1]+ranges[2]) / 2.0;
+        //retval[0] = (ranges[3]+ranges[4]) / 2.0;
+        //retval[0] = (ranges[5]+ranges[6]) / 2.0;
+
+        return retval;
     }
 }
-
