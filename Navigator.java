@@ -174,7 +174,7 @@ public class Navigator {
         lastyaw = curryaw;
         distribution = scale(distribution);
         for(Point p : distribution) {
-            if(p.prob < PROB_THRESHOLD || map.valid(p)) {
+            if(p.prob < PROB_THRESHOLD || !map.valid(p)) {
                 toRemove.add(p);
             }
         }
