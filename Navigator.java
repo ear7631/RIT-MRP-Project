@@ -138,7 +138,7 @@ public class Navigator {
             do {
                 x = (int)(rand.nextDouble() * map.width);
                 y = (int)(rand.nextDouble() * map.height);
-                yaw = rand.nextDouble() * (2 * Math.PI) - (2 * Math.PI);
+                yaw = rand.nextDouble() * (2 * Math.PI) - Math.PI;
             } while(!map.valid(x, y));
             dist.add(new Point(x, y, yaw, (double)1/K));
         }
