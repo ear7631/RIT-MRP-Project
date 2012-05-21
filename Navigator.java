@@ -215,13 +215,22 @@ public class Navigator {
         painter.reset(map);
         for(Point p : distribution) {
         	// Render the distribution of particles to the gridmap
-            painter.setPixel(p.x, p.y, 0xFFFF0000);
+        	for(int i = 0; i < 5; i++) {
+    			for(int j=0; j < 5; j++) {
+    				painter.setPixel(p.x - (2-j), p.y - (2-i), 0xFFFF0000);
+    			}
+    		}
+            
             
             if(p.prob > bestPoint.prob) {
                 bestPoint = p;
             }
         }
-        painter.setPixel(bestPoint.x, bestPoint.y, 0xFF00FF00);
+        for(int i = 0; i < 9; i++) {
+			for(int j=0; j < 9; j++) {
+				painter.setPixel(bestPoint.x - (4-j), bestPoint.y - (4-i), 0xFF00FF00);
+			}
+		}
         painter.repaint();
         System.out.printf("I think we're at %s\n", bestPoint);
         if(bestPoint.prob > LOC_THRESHOLD) {
