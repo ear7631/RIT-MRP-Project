@@ -168,7 +168,7 @@ public class Navigator {
             for(int i=0; i<readings.length; i++) {
                 distance += Math.abs(readings[i] - ranges[i]);
             }
-            p.prob = 1 - distance;
+            p.prob = 40 / distance;
         }
         lastx = currx;
         lasty = curry;
