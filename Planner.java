@@ -125,7 +125,7 @@ public class Planner {
 			//start = this.point.get("G4");
 			goal = this.points.get("C1");
 		} else {
-			start = Navigator.whereAreWe(Navigator.distribution);
+			start = Navigator.whereAreWe();
 			this.drawPoint(start, 0xFF0000FF);
 			this.refreshImage();
 		}
