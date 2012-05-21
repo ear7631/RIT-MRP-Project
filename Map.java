@@ -62,12 +62,12 @@ public class Map {
         double yaw = p.yaw - (3 * (Math.PI / 4));
         for(int i=0; i<8; i++) {
             for(int j=1; j<=75; j++) {
-                x = p.x + (int)(Math.cos(p.yaw) * j);
-                y = p.y + (int)(Math.sin(p.yaw) * j);
+                x = p.x + (int)(Math.cos(yaw) * j);
+                y = p.y + (int)(Math.sin(yaw) * j);
                 if(!valid(x, y)) {
                     retVal[i] = (double)(j - 1) / 15;
                     break;
-                } else if(j == 100) {
+                } else if(j == 75) {
                     retVal[i] = 5;
                 }
             }
