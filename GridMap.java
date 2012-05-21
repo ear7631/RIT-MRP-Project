@@ -40,8 +40,8 @@ public class GridMap extends JFrame {
     }
     
     void reset(Map map) {
-    	for(int i = 0; i < map.height; i++) {
-    		for(int j = 0; j < map.width; j++) {
+    	for(int i = 0; i < map.width; i++) {
+    		for(int j = 0; j < map.height; j++) {
     			if(map.map[i][j] == 255) {
     				setPixel(i, j, 0xFFFFFFFF);
     			} else {
