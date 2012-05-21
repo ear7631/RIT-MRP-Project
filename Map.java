@@ -65,7 +65,7 @@ public class Map {
                 x = p.x + (int)(Math.cos(p.yaw) * j);
                 y = p.y + (int)(Math.sin(p.yaw) * j);
                 if(!valid(x, y)) {
-                    retVal[i] = (double)j / 15;
+                    retVal[i] = (double)(j - 1) / 15;
                     break;
                 } else if(j == 100) {
                     retVal[i] = 5;
