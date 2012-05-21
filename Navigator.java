@@ -230,7 +230,7 @@ public class Navigator {
             total += p.prob;
         }
         for(Point p : dist) {
-            p.prob /= total * K;
+            p.prob /= total;
         }
         return dist;
     }
