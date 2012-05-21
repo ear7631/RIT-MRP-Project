@@ -22,6 +22,7 @@ import javaclient3.structures.PlayerColor;
 
 public class Navigator {
 
+	static GridMap painter = new GridMap(2000, 700);
 	static PlayerClient pc;
 	static Position2DInterface pos;
 	static RangerInterface laser;
@@ -39,7 +40,7 @@ public class Navigator {
     static final Random rand = new Random();
     static final double PROB_THRESHOLD = 1.0 / (2 * K);
     static final double LOC_THRESHOLD = 0.3;
-
+    
     public static void main(String[] args) {
 		String filename;
 
@@ -170,6 +171,7 @@ public class Navigator {
             }
             p.prob = 40 / distance;
         }
+        
         lastx = currx;
         lasty = curry;
         lastyaw = curryaw;
@@ -210,11 +212,17 @@ public class Navigator {
         }
         distribution = scale(distribution);
         Point bestPoint = new Point(0, 0);
+        painter.reset(map);
         for(Point p : distribution) {
+        	// Render the distribution of particles to the gridmap
+            painter.setPixel(p.x, p.y, 0xFFFF0000);
+            
             if(p.prob > bestPoint.prob) {
                 bestPoint = p;
             }
         }
+        painter.setPixel(bestPoint.x, bestPoint.y, 0xFF00FF00);
+        painter.repaint();
         System.out.printf("I think we're at %s\n", bestPoint);
         if(bestPoint.prob > LOC_THRESHOLD) {
             System.out.println(bestPoint.prob);

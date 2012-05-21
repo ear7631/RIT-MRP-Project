@@ -38,6 +38,18 @@ public class GridMap extends JFrame {
     	g2d.setStroke(bs);
     	g2d.drawLine(srcx, srcy, destx, desty);
     }
+    
+    void reset(Map map) {
+    	for(int i = 0; i < map.height; i++) {
+    		for(int j = 0; j < map.width; j++) {
+    			if(map.map[i][j] == 255) {
+    				setPixel(i, j, 0xFFFFFFFF);
+    			} else {
+    				setPixel(i, j, 0xFF000000);
+    			}
+    		}
+    	}
+    }
 
     void touch() { mp.repaint(); }
 
