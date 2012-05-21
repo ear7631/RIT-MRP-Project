@@ -31,7 +31,11 @@ public class Map {
     }
 
     public boolean valid(int x, int y) {
-        return this.map[x][y] == 255;
+        try {
+            return this.map[x][y] == 255;
+        } catch(ArrayIndexOutOfBoundsException e) {
+            return false;
+        }
     }
 
     public boolean valid(Point p) {
