@@ -54,11 +54,9 @@ public class Navigator {
 		pos = pc.requestInterfacePosition2D(0, PlayerConstants.PLAYER_OPEN_MODE);
         pos.setMotorPower(1);
         while(sonar == null) {
-            System.out.println("Let's try that again...");
             //laser = pc.requestInterfaceRanger(0, PlayerConstants.PLAYER_OPEN_MODE);
             sonar = pc.requestInterfaceSonar(0, PlayerConstants.PLAYER_OPEN_MODE);
         }
-        System.out.println(sonar);
 
 		Scanner fileReader = null;
 		try {
@@ -101,7 +99,6 @@ public class Navigator {
         double omega = 20*Math.PI/180; 
 
         do {
-            System.out.println("Waiting on ranger");
             pc.readAll();
         } while(!sonar.isDataReady());
 
@@ -144,14 +141,12 @@ public class Navigator {
                 yaw = rand.nextDouble() * (2 * Math.PI) - (2 * Math.PI);
             } while(!map.valid(x, y));
             dist.add(new Point(x, y, yaw, (double)1/K));
-            //System.out.printf("(%d, %d)", x, y);
         }
         return dist;
     }
 
     public static Point whereAreWe(LinkedList<Point> distribution) {
         do {
-            System.out.println("Waiting on ranger to localise");
             pc.readAll();
         } while(!sonar.isDataReady());
         double[] ranges = rangerToArr();
