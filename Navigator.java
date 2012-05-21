@@ -66,14 +66,14 @@ public class Navigator {
 			return;
 		}
 
-        distribution = getNewDistribution();;
+        distribution = getNewDistribution();
         
         Point offset = null;
         while(offset == null) {
             safeWander();
             System.out.println("Trying to find where we are...");
             //figure out where we are
-            Point p = whereAreWe(distribution);
+            Point p = whereAreWe();
             offset = p;
         }
         System.out.printf("I *really* think we're at %s\n", offset);
@@ -145,7 +145,7 @@ public class Navigator {
         return dist;
     }
 
-    public static Point whereAreWe(LinkedList<Point> distribution) {
+    public static Point whereAreWe() {
         do {
             pc.readAll();
         } while(!sonar.isDataReady());
