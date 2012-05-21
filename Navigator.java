@@ -133,7 +133,7 @@ public class Navigator {
     }
     
     public static LinkedList<Point> getNewDistribution() {
-    	LinkedList<Point> distribution = new LinkedList<Point>();
+    	LinkedList<Point> dist = new LinkedList<Point>();
         for(int i = 0; i < K; i++) {
             int x = 0;
             int y = 0;
@@ -143,10 +143,10 @@ public class Navigator {
                 y = (int)(rand.nextDouble() * map.height);
                 yaw = rand.nextDouble() * (2 * Math.PI) - (2 * Math.PI);
             } while(!map.valid(x, y));
-            distribution.add(new Point(x, y, yaw, (double)1/K));
+            dist.add(new Point(x, y, yaw, (double)1/K));
             //System.out.printf("(%d, %d)", x, y);
         }
-        return distribution;
+        return dist;
     }
 
     public static Point whereAreWe(LinkedList<Point> distribution) {
@@ -228,15 +228,15 @@ public class Navigator {
         }
     }
 
-    private static LinkedList<Point> scale(LinkedList<Point> distribution) {
+    private static LinkedList<Point> scale(LinkedList<Point> dist) {
         double total = 0;
-        for(Point p : distribution) {
+        for(Point p : dist) {
             total += p.prob;
         }
-        for(Point p : distribution) {
+        for(Point p : dist) {
             p.prob /= total * K;
         }
-        return distribution;
+        return dist;
     }
 
     private static double[] rangerToArr() {
