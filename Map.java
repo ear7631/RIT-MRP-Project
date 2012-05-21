@@ -44,8 +44,8 @@ public class Map {
 
     public static int[] robotToMap(double x, double y){
         int[] retVal = new int[2];
-        retVal[0] = (int)x * 15;
-        retVal[1] = (int)y * 15;
+        retVal[0] = (int)(x * 15);
+        retVal[1] = (int)(y * 15);
         return retVal;
     }
     public static double[] mapToRobot(int x, int y){
