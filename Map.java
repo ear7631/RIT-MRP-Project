@@ -56,7 +56,7 @@ public class Map {
         int x = 0;
         int y = 0;
         double yaw = p.yaw - (3 * (Math.PI / 4));
-        for(int i=0; i<3; i++) {
+        for(int i=0; i<8; i++) {
             for(int j=75; j<=0; j--) {
                 x = (int)Math.cos(p.yaw) * j;
                 y = (int)Math.sin(p.yaw) * j;
