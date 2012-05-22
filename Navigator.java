@@ -99,9 +99,10 @@ public class Navigator {
         double omega = 20*Math.PI/180; 
 
         double[] ranges = rangerToArr();
-        double left = (ranges[0] + ranges[1]) / 2;
-        double front = (ranges[2] + ranges[3]) / 2;
-        double right = (ranges[4] + ranges[5]) / 2;
+        double left = (ranges[1] + ranges[2]) / 2;
+        double front = (ranges[3] + ranges[4]) / 2;
+        double right = (ranges[5] + ranges[6]) / 2;
+        System.out.println(Arrays.toString(ranges));
         
         if (front < 0.5) {
             // Oh god we're going to crash
