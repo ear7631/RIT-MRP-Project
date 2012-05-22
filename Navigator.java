@@ -104,9 +104,9 @@ public class Navigator {
         } while(!sonar.isDataReady());
 
         double[] ranges = rangerToArr();
-        double left = (ranges[4] + ranges[5]) / 2;
+        double left = (ranges[0] + ranges[1]) / 2;
         double front = (ranges[2] + ranges[3]) / 2;
-        double right = (ranges[0] + ranges[1]) / 2;
+        double right = (ranges[4] + ranges[5]) / 2;
         
         if (front < 0.5) {
             // Oh god we're going to crash
@@ -175,6 +175,7 @@ public class Navigator {
         lastx = currx;
         lasty = curry;
         lastyaw = curryaw;
+
         distribution = scale(distribution);
         for(Point p : distribution) {
             if(p.prob < PROB_THRESHOLD || !map.valid(p)) {
@@ -208,6 +209,7 @@ public class Navigator {
 
         // Add the new points and scale again
         for(Point p : additions) {
+            p.yaw = rand.nextDouble() * 2 * Math.PI - Math.PI;
             distribution.add(p);
         }
         distribution = scale(distribution);
