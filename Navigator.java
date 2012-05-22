@@ -98,10 +98,6 @@ public class Navigator {
         double turnrate = 0, fwd = 0.2;
         double omega = 20*Math.PI/180; 
 
-        do {
-            pc.readAll();
-        } while(!sonar.isDataReady());
-
         double[] ranges = rangerToArr();
         double left = (ranges[0] + ranges[1]) / 2;
         double front = (ranges[2] + ranges[3]) / 2;
@@ -138,9 +134,6 @@ public class Navigator {
     }
 
     public static Point whereAreWe() {
-        do {
-            pc.readAll();
-        } while(!sonar.isDataReady());
         double[] ranges = rangerToArr();
         double currx = pos.getX();
         double curry = pos.getY();
@@ -246,6 +239,10 @@ public class Navigator {
     }
 
     private static double[] rangerToArr() {
+        do {
+            pc.readAll();
+        } while(!sonar.isDataReady());
+
         //double[] ranges = laser.getData().getRanges();
         float[] ranges = sonar.getData().getRanges();
         double[] retVal = new double[8];
