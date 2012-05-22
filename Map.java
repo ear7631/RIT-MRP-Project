@@ -8,6 +8,7 @@ public class Map {
     public int width;
     public int height;
     public int[][] map;
+    final double[] sonar_yaw = {90, 50, 30, 10, -10, -30, -50, -90};
     public Map(String image_file) {
         // Read map
         Raster data = null;
@@ -60,8 +61,9 @@ public class Map {
         double[] retVal = new double[8];
         int x = 0;
         int y = 0;
-        double yaw = p.yaw - (3 * (Math.PI / 4));
+        double yaw;
         for(int i=0; i<8; i++) {
+            yaw = p.yaw + Math.toRadians(sonar_yaw[i]);
             for(int j=1; j<=75; j++) {
                 x = (int)p.x + (int)(Math.cos(yaw) * j);
                 y = (int)p.y + (int)(Math.sin(yaw) * j);
@@ -72,7 +74,6 @@ public class Map {
                     retVal[i] = 5;
                 }
             }
-            yaw += 3 * (Math.PI / 16);
         }
         return retVal;
     }
