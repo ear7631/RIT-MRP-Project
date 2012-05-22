@@ -13,15 +13,12 @@ public class SafeGoto {
     @SuppressWarnings("deprecation")
 	public boolean move(SonarInterface sonar, Point pos, Point nextDest, Position2DInterface robot) {
 		RoboGuide guide = new RoboGuide(pos);
-        System.out.println(pos);
-        System.out.println(nextDest);
 
-		float[] sonars = sonar.getData().getRanges();
-		//double[] many_ranges = ranger.getData().getRanges();
+		double[] sonars = Navigator.rangerToArr();
 		
 		// GuidePoints greater than this are thrown away.
-		double GOAL_WEIGHT = 1.0;
-		double OBJECT_WEIGHT = 3.0;
+		double GOAL_WEIGHT = 2.0;
+		double OBJECT_WEIGHT = 1.0;
 		
 		// also keep track of how many recorded samples you have. This will modify the coefficient.
 		int num_samples = 0;
