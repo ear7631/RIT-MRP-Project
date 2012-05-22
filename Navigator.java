@@ -34,7 +34,7 @@ public class Navigator {
     static double lastyaw = 0;
 
     // Number of points in particle cloud
-    static final int K = 1000;
+    static final int K = 2000;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
     static final double PROB_THRESHOLD = 38; //1.0 / (2 * K);
@@ -106,7 +106,6 @@ public class Navigator {
         double left = (ranges[1] + ranges[2]) / 2;
         double front = (ranges[3] + ranges[4]) / 2;
         double right = (ranges[5] + ranges[6]) / 2;
-        System.out.println(Arrays.toString(ranges));
         
         if (front < 0.5) {
             // Oh god we're going to crash
