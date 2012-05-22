@@ -80,7 +80,7 @@ public class Navigator {
         
         Point offset = null;
         int rateLimit = 0;
-        Point waypoint = destinations.pop();
+        Point waypoint = destinations.removeFirst();
         boolean reachedWaypoint = false;
         boolean done = false;
         while(!done) {
@@ -94,7 +94,7 @@ public class Navigator {
         			return;
         		} else {
         			System.out.println("Destination reached, on to the next one...");
-        			waypoint = destinations.pop();
+        			waypoint = destinations.removeFirst();
         		}
         	}
         	
