@@ -11,7 +11,7 @@ import javaclient3.*;
 public class SafeGoto {
 
     @SuppressWarnings("deprecation")
-	public boolean move(SonarInterface sonar, Point pos, GuidePoint nextDest, Position2DInterface robot) {
+	public boolean move(SonarInterface sonar, Point pos, Point nextDest, Position2DInterface robot) {
 		RoboGuide guide = new RoboGuide(pos);
 
 		float[] sonars = sonar.getData().getRanges();
@@ -57,8 +57,8 @@ public class SafeGoto {
 			o_angle = 0;
 		}
 		
-		double goal_vector_x = (nextDest.getX() - pos.x) / guide.distanceTo(nextDest);
-		double goal_vector_y = (nextDest.getY() - pos.y) / guide.distanceTo(nextDest);
+		double goal_vector_x = (nextDest.x - pos.x) / guide.distanceTo(nextDest);
+		double goal_vector_y = (nextDest.y - pos.y) / guide.distanceTo(nextDest);
 		
 		double final_vector_x = (GOAL_WEIGHT * goal_vector_x) + (OBJECT_WEIGHT * sum_x);
 		double final_vector_y = (GOAL_WEIGHT * goal_vector_y) + (OBJECT_WEIGHT * sum_y);
@@ -95,8 +95,8 @@ public class SafeGoto {
 			robot.setSpeed(speed, turn);
 		}
 		
-		double dX = nextDest.getX() - pos.x;
-		double dY = nextDest.getY() - pos.y;
+		double dX = nextDest.x - pos.x;
+		double dY = nextDest.y - pos.y;
 		if (Math.abs(dX) < .25 && Math.abs(dY) < .25) {
 			return true;
 		} else {

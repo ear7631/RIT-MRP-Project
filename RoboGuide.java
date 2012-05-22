@@ -16,18 +16,18 @@ public class RoboGuide {
 		this.pos = pos;
 	}
 	
-	public boolean GoTo(GuidePoint p) {
+	public boolean GoTo(Point p) {
 		return false;
 	}
 
 
 	public double distanceTo(double x, double y) {
-		return distanceTo(new GuidePoint(x, y));
+		return distanceTo(new Point(x, y, 0, 0));
 	}
 
-	public double distanceTo(GuidePoint p) {
-		double a = Math.pow(p.getX() - pos.x, 2);
-		double b = Math.pow(p.getY() - pos.y, 2);
+	public double distanceTo(Point p) {
+		double a = Math.pow(p.x - pos.x, 2);
+		double b = Math.pow(p.y - pos.y, 2);
 		return Math.sqrt( (a + b) );
 	}
 	
