@@ -151,7 +151,7 @@ public class Planner {
 		
 		// If the start isn't in the roadmap...
 		// Add in the start node to our copied roadmap. Add in the closest node as a neighbor.
-		if(!this.roadmap.keySet().contains(start)) {
+		if(!copymap.containsKey(start)) {
 			LinkedList<Point> start_neighbors = findConnectingRoadmapNodes(start);
 			copymap.put(start, new HashSet<Point>());
 			for(Point start_neighbor : start_neighbors) {
@@ -161,7 +161,7 @@ public class Planner {
 		}
 		
 		// Do the same for the end goal
-		if(!this.roadmap.keySet().contains(goal)) {
+		if(!copymap.containsKey(goal)) {
 			LinkedList<Point> goal_neighbors = findConnectingRoadmapNodes(goal);
 			copymap.put(goal, new HashSet<Point>());
 			for(Point goal_neighbor : goal_neighbors) {

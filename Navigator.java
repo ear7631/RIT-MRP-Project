@@ -107,6 +107,8 @@ public class Navigator {
         	} else {
             	// Get the next "step" in the path with our roadmap
             	// Argument is the GOAL destination. It uses whereAreWe as the START.
+                System.out.println(offset);
+                System.out.println(waypoint);
             	Point localDestination = planner.nextLocalWaypoint(offset, waypoint);
             	
             	//Arguments, sonar interface, current position, goal, position2d (for movement)
