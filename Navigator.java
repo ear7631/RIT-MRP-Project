@@ -29,7 +29,6 @@ public class Navigator {
 	static SonarInterface sonar;
 	static LinkedList<Point> distribution;
 	static final double tolerance = 0.25;
-    static final double[] sonar_yaw = {90, 50, 30, 10, -10, -30, -50, -90};
     static double lastx = 0;
     static double lasty = 0;
     static double lastyaw = 0;
@@ -133,7 +132,7 @@ public class Navigator {
     public static LinkedList<Point> getNewDistribution() {
     	LinkedList<Point> dist = new LinkedList<Point>();
         for(int i = 0; i < K; i++) {
-            dist.add(new Point());
+            dist.add(new Point(K));
         }
         return dist;
     }
@@ -193,7 +192,7 @@ public class Navigator {
         System.out.printf("Adding %d particles back.\n", K - distribution.size());
         while(distribution.size() < K) {
             if(rand.nextDouble() < 0.5) {
-                distribution.add(new Point());
+                distribution.add(new Point(K));
             }
             double temp_tot = 0;
             double target = rand.nextDouble();
