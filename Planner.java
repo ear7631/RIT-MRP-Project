@@ -134,7 +134,13 @@ public class Planner {
 		
 		// Create a copy of the roadmap.
 		// Do this because we add in neighbors for this iteration only.
-		HashMap<Point, HashSet<Point>> copymap = new HashMap<Point, HashSet<Point>>(this.roadmap);
+		HashMap<Point, HashSet<Point>> copymap = new HashMap<Point, HashSet<Point>>();//this.roadmap);
+		for(Point key : this.roadmap.keySet()) {
+			copymap.put(key, new HashSet<Point>());
+			for(Point value : this.roadmap.get(key)) {
+				copymap.get(key).add(value);
+			}
+		}
 		
 		// Necessary collections for A*
 		HashSet<Point> closed = new HashSet<Point>();
