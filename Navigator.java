@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Stack;
 
 //Player/Stage imports
 import javaclient3.*;
@@ -22,6 +23,7 @@ import javaclient3.structures.PlayerColor;
 
 public class Navigator {
 
+	static SafeGoto safeGoto = new SafeGoto();
 	static GridMap painter = new GridMap(2000, 700);
 	static PlayerClient pc;
 	static Position2DInterface pos;
@@ -59,6 +61,7 @@ public class Navigator {
             sonar = pc.requestInterfaceSonar(0, PlayerConstants.PLAYER_OPEN_MODE);
         }
 
+        LinkedList<Point> destinations = new LinkedList<Point>();
 		Scanner fileReader = null;
 		try {
 			fileReader = new Scanner(new File(filename));
@@ -66,13 +69,48 @@ public class Navigator {
 			System.out.printf("Input file %s not found\n", filename);
 			return;
 		}
+		
+		while(fileReader.hasNextLine()) {
+			String[] pointdata = fileReader.nextLine().split(" ");
+			destinations.add(new Point(Double.parseDouble(pointdata[0]), Double.parseDouble(pointdata[1]), 0, 0));
+		}
 
         distribution = getNewDistribution();
+        Planner planner = new Planner();
         
         Point offset = null;
         int rateLimit = 0;
-        while(offset == null) {
-            safeWander();
+        Point waypoint = destinations.pop();
+        boolean reachedWaypoint = false;
+        boolean done = false;
+        while(!done) {
+        	
+        	// If we reached a waypoint, get the next one, or finish.
+        	// TODO: pause for project requirements
+        	if(reachedWaypoint) {
+        		reachedWaypoint = false;
+        		if(destinations.isEmpty()) {
+        			System.out.println("All finished reaching goals!");
+        			return;
+        		} else {
+        			System.out.println("Destination reached, on to the next one...");
+        			waypoint = destinations.pop();
+        		}
+        	}
+        	
+        	// if we are not localized confidently enough...
+        	if(offset == null) {
+        		safeWander();
+        	} else {
+            	// Get the next "step" in the path with our roadmap
+            	// Argument is the GOAL destination. It uses whereAreWe as the START.
+            	Point localDestination = planner.nextLocalWaypoint(waypoint);
+            	
+            	//Arguments, sonar interface, current position, goal, position2d (for movement)
+            	//TODO: make it work
+            	safeGoto.move(sonar, p, nextDest, pos);
+        	}
+
             if(rateLimit == 5) {
                 //figure out where we are
                 Point p = whereAreWe();
@@ -85,8 +123,6 @@ public class Navigator {
         // Translate the offset by where we think we are now.
         offset.x -= pos.getX();
         offset.y -= pos.getY();
-
-        //TODO: pathfind
 	}
 
 	private static boolean isTolerable(double x, double y) {
