@@ -133,15 +133,7 @@ public class Navigator {
     public static LinkedList<Point> getNewDistribution() {
     	LinkedList<Point> dist = new LinkedList<Point>();
         for(int i = 0; i < K; i++) {
-            int x = 0;
-            int y = 0;
-            double yaw = 0;
-            do {
-                x = (int)(rand.nextDouble() * map.width);
-                y = (int)(rand.nextDouble() * map.height);
-                yaw = rand.nextDouble() * (2 * Math.PI) - Math.PI;
-            } while(!map.valid(x, y));
-            dist.add(new Point(x, y, yaw, (double)1/K));
+            dist.add(new Point());
         }
         return dist;
     }
@@ -158,6 +150,11 @@ public class Navigator {
         
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
+            // Randomly kill about half the points.
+            if(rand.nextDouble() < 0.5) {
+                toRemove.add(p);
+                continue;
+            }
             p.yaw += lastyaw - curryaw;
             double[] translated = Map.robotToMap(lastx - currx, lasty - curry, p.yaw);
             p.x += translated[0];
@@ -195,6 +192,9 @@ public class Navigator {
         }
         distribution = scale(distribution);
         while(distribution.size() < K) {
+            if(rand.nextDouble() < 0.5) {
+                distribution.add(new Point());
+            }
             double temp_tot = 0;
             double target = rand.nextDouble();
             for(Point p : distribution) {

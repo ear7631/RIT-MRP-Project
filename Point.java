@@ -4,7 +4,15 @@ public class Point {
     public double yaw;
     public double prob;
     
-    
+    public Point() {
+        this.prob = 1;
+        do {
+            this.x = (int)(Navigator.rand.nextDouble() * Navigator.map.width);
+            this.y = (int)(Navigator.rand.nextDouble() * Navigator.map.height);
+            this.yaw = Navigator.rand.nextDouble() * (2 * Math.PI) - Math.PI;
+        } while(!Navigator.map.valid((int)x, (int)y));
+    }   
+
     public Point(double x, double y, double yaw, double prob) {
     	this.x = x;
         this.y = y;
