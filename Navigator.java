@@ -155,10 +155,10 @@ public class Navigator {
                 toRemove.add(p);
                 continue;
             }
-            p.yaw += lastyaw - curryaw;
+            p.yaw += lastyaw - curryaw + rand.nextDouble() * 0.2 - 0.1;
             double[] translated = Map.robotToMap(lastx - currx, lasty - curry, p.yaw);
-            p.x += translated[0];
-            p.y += translated[1];
+            p.x += translated[0] + rand.nextDouble() * 10 - 5;
+            p.y += translated[1] + rand.nextDouble() * 10 - 5;
 
             //scale likelihood to map
             double[] readings = map.checkHere(p);
