@@ -69,12 +69,16 @@ public class Navigator {
         distribution = getNewDistribution();
         
         Point offset = null;
+        int rateLimit = 0;
         while(offset == null) {
             safeWander();
-            System.out.println("Trying to find where we are...");
-            //figure out where we are
-            Point p = whereAreWe();
-            offset = p;
+            if(rateLimit == 5) {
+                //figure out where we are
+                Point p = whereAreWe();
+                offset = p;
+                rateLimit = 0;
+            }
+            rateLimit++;
         }
         System.out.printf("I *really* think we're at %s\n", offset);
 
