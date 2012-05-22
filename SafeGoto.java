@@ -21,7 +21,7 @@ public class SafeGoto {
 		
 		// GuidePoints greater than this are thrown away.
 		double GOAL_WEIGHT = 1.0;
-		double OBJECT_WEIGHT = 1.0;
+		double OBJECT_WEIGHT = 3.0;
 		
 		// also keep track of how many recorded samples you have. This will modify the coefficient.
 		int num_samples = 0;
