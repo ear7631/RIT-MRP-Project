@@ -186,11 +186,11 @@ public class Navigator {
         }
 
         // Make some new points for all the ones we took out
-        LinkedList<Point> additions = new LinkedList<Point>();
         if(distribution.size() == 0) {
             distribution = getNewDistribution();
         }
         distribution = scale(distribution);
+        System.out.printf("Adding %d particles back.\n", K - distribution.size());
         while(distribution.size() < K) {
             if(rand.nextDouble() < 0.5) {
                 distribution.add(new Point());
@@ -205,13 +205,7 @@ public class Navigator {
                 }
             }
         }
-        System.out.printf("Adding %d particles back.\n", additions.size());
 
-        // Add the new points and scale again
-        for(Point p : additions) {
-            p.yaw = rand.nextDouble() * 2 * Math.PI - Math.PI;
-            distribution.add(p);
-        }
         distribution = scale(distribution);
         Point bestPoint = new Point(0, 0);
         painter.reset(map);
