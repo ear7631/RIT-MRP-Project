@@ -81,7 +81,6 @@ public class Navigator {
             }
             rateLimit++;
         }
-        System.out.printf("I *really* think we're at %s\n", offset);
 
         // Translate the offset by where we think we are now.
         offset.x -= pos.getX();
@@ -175,7 +174,6 @@ public class Navigator {
         lastyaw = curryaw;
 
         distribution = scale(distribution);
-        System.out.printf("Removing %d particles.\n", toRemove.size());
         // Out of loop to avoid ConcurrentModificationException
         for(Point p : toRemove) {
             distribution.remove(p);
@@ -186,7 +184,6 @@ public class Navigator {
             distribution = getNewDistribution();
         }
         distribution = scale(distribution);
-        System.out.printf("Adding %d particles back.\n", K - distribution.size());
         while(distribution.size() < K) {
             if(rand.nextDouble() < 0.5) {
                 distribution.add(new Point(K));
@@ -214,9 +211,7 @@ public class Navigator {
         }
         painter.setPixel((int)bestPoint.x, (int)bestPoint.y, 0xFF00FF00);
         painter.repaint();
-        System.out.printf("I think we're at %s\n", bestPoint);
         /*if(bestPoint.prob > LOC_THRESHOLD) {
-            System.out.println(bestPoint.prob);
             return bestPoint;
         } else {*/
             return null;
