@@ -207,10 +207,12 @@ public class Navigator {
                 count++;
                 bestPoint.x += p.x;
                 bestPoint.y += p.y;
+                bestPoint.yaw += p.yaw + (2 * Math.PI) % (2 * Math.PI);
             }
         }
         bestPoint.x /= count;
         bestPoint.y /= count;
+        bestPoint.yaw /= count;
         
         lastx = currx;
         lasty = curry;
