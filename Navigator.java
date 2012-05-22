@@ -235,12 +235,12 @@ public class Navigator {
 		}
         painter.repaint();
         System.out.printf("I think we're at %s\n", bestPoint);
-        if(bestPoint.prob > LOC_THRESHOLD) {
+        /*if(bestPoint.prob > LOC_THRESHOLD) {
             System.out.println(bestPoint.prob);
             return bestPoint;
-        } else {
+        } else {*/
             return null;
-        }
+        //}
     }
 
     private static LinkedList<Point> scale(LinkedList<Point> dist) {
