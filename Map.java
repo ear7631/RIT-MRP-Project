@@ -8,7 +8,7 @@ public class Map {
     public int width;
     public int height;
     public int[][] map;
-    final double[] sonar_yaw = {90, 50, 30, 10, -10, -30, -50, -90};
+    final double[] sonar_yaw = {-90, -50, -30, -10, 10, 30, 50, 90};
     public Map(String image_file) {
         // Read map
         Raster data = null;
