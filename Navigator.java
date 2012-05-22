@@ -155,13 +155,13 @@ public class Navigator {
         double curry = pos.getY();
         double curryaw = pos.getYaw();
 
-        int[] translated = Map.robotToMap(lastx - currx, lasty - curry);
         
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
+            p.yaw += lastyaw - curryaw;
+            float[] translated = Map.robotToMap(lastx - currx, lasty - curry, p.yaw);
             p.x += translated[0];
             p.y += translated[1];
-            p.yaw += lastyaw - curryaw;
 
             //scale likelihood to map
             double[] readings = map.checkHere(p);
