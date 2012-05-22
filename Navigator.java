@@ -73,8 +73,8 @@ public class Navigator {
 		// Get the points, convert to pixel coordinates
 		while(fileReader.hasNextLine()) {
 			String[] pointdata = fileReader.nextLine().split(" ");
-			double x = (Double.parseDouble(pointdata[0]) * 100) / 6.6;
-			double y = (Double.parseDouble(pointdata[1]) * 100) / 6.6;
+			double x = ((Double.parseDouble(pointdata[0]) * 100) / 6.6) + 1000;
+			double y = 350 - ((Double.parseDouble(pointdata[1]) * 100) / 6.6);
 			destinations.add(new Point(x, y, 0, 0));
 		}
 

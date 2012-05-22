@@ -118,11 +118,10 @@ public class Planner {
 		
 		if(DEBUG) {
 			System.out.println("Debug is on, using preset points.");
-			start = this.generateRandomPoint(new Random());
 			this.drawPoint(start, 0xFF0000FF);
 			this.refreshImage();
 			//start = this.point.get("G4");
-			goal = this.points.get("C1");
+			//goal = this.points.get("C1");
 		}
 		
 		// Create a copy of the roadmap.
@@ -148,6 +147,7 @@ public class Planner {
 		// Do the same for the end goal
 		if(!this.roadmap.keySet().contains(goal)) {
 			Point goal_neighbor = findClosestRoadmapNode(goal);
+			copymap.get(goal_neighbor).add(goal);
 			copymap.put(goal, new HashSet<Point>());
 			copymap.get(goal).add(goal_neighbor);
 		}
@@ -479,7 +479,12 @@ public class Planner {
 		Planner planner = new Planner();
 		Planner.DEBUG = true;
 		planner.refreshImage();
-		System.out.println("Next roadmap point to go to: " + planner.nextLocalWaypoint(null, null));
+		// 1064, 159, 630, 201
+		//Point start = null;
+		//Point goal = null;
+		Point start = new Point(1064, 159, 0, 0);
+		Point goal = new Point(1630, 350-201, 0, 0);
+		System.out.println("Next roadmap point to go to: " + planner.nextLocalWaypoint(start, goal));
 		planner.reveal();
 	}
 
