@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.Map.Entry;
 
@@ -74,11 +75,12 @@ public class Planner {
 	}
 
 	
-	private Point findClosestRoadmapNode(Point origin) {
+	private LinkedList<Point> findConnectingRoadmapNodes(Point origin) {
+		LinkedList<Point> neighbors = new LinkedList<Point>();
 		// If the point is not in our roadmap, check which roadmap point is closest
 		// Use that node as the neighbor
 		if(this.points.values().contains(origin)) {
-			return origin;
+			return neighbors;
 		}
 		
 		double minimum = Double.MAX_VALUE;
@@ -89,9 +91,12 @@ public class Planner {
 					((candidate.x - origin.x) * (candidate.x - origin.x)) + 
 					((candidate.y - origin.y) * (candidate.y - origin.y)));
 			
-			if(d < minimum && !this.lineClips(origin, candidate)) {
-				neighbor = candidate;
-				minimum = d;
+			if(!this.lineClips(origin, candidate)) {
+				neighbors.add(candidate);
+				if(d < minimum) {
+					neighbor = candidate;
+					minimum = d;
+				}
 			}
 		}
 		
@@ -109,9 +114,11 @@ public class Planner {
 					minimum = d;
 				}
 			}
+			
+			neighbors.add(neighbor);
 		}
 		
-		return neighbor;
+		return neighbors;
 	}
 	
 	public Point nextLocalWaypoint(Point start, Point goal) {
@@ -122,6 +129,7 @@ public class Planner {
 			//goal = this.points.get("C1");
 		}
         this.drawPoint(start, 0xFF0000FF);
+        this.drawPoint(goal, 0xFF0000FF);
         this.refreshImage();
 		
 		// Create a copy of the roadmap.
@@ -138,20 +146,29 @@ public class Planner {
 		// If the start isn't in the roadmap...
 		// Add in the start node to our copied roadmap. Add in the closest node as a neighbor.
 		if(!this.roadmap.keySet().contains(start)) {
-			Point start_neighbor = findClosestRoadmapNode(start);
-			copymap.get(start_neighbor).add(start);
+			LinkedList<Point> start_neighbors = findConnectingRoadmapNodes(start);
 			copymap.put(start, new HashSet<Point>());
-			copymap.get(start).add(start_neighbor);
+			for(Point start_neighbor : start_neighbors) {
+				copymap.get(start_neighbor).add(start);
+				copymap.get(start).add(start_neighbor);
+			}
 		}
 		
 		// Do the same for the end goal
 		if(!this.roadmap.keySet().contains(goal)) {
-			Point goal_neighbor = findClosestRoadmapNode(goal);
-			copymap.get(goal_neighbor).add(goal);
+			LinkedList<Point> goal_neighbors = findConnectingRoadmapNodes(goal);
 			copymap.put(goal, new HashSet<Point>());
-			copymap.get(goal).add(goal_neighbor);
+			for(Point goal_neighbor : goal_neighbors) {
+				copymap.get(goal_neighbor).add(goal);
+				copymap.get(goal).add(goal_neighbor);	
+			}
 		}
 		
+		// If the start and goal can see eachother, make them connect, too
+		if(!this.lineClips(start, goal)) {
+			copymap.get(start).add(goal);
+			copymap.get(goal).add(start);
+		}
 		
 		// Initialize the start node's score to 0, add it to the open set.
 		score.put(start, 0.0);
@@ -482,8 +499,8 @@ public class Planner {
 		// 1064, 159, 630, 201
 		//Point start = null;
 		//Point goal = null;
-		Point start = new Point(1064, 159, 0, 0);
-		Point goal = new Point(1630, 350-201, 0, 0);
+		Point start = new Point(1127, 174, 0, 0);
+		Point goal = new Point(1129, 350-150, 0, 0);
 		System.out.println("Next roadmap point to go to: " + planner.nextLocalWaypoint(start, goal));
 		planner.reveal();
 	}
