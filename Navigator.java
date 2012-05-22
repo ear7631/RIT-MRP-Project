@@ -159,7 +159,7 @@ public class Navigator {
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
             p.yaw += lastyaw - curryaw;
-            float[] translated = Map.robotToMap(lastx - currx, lasty - curry, p.yaw);
+            double[] translated = Map.robotToMap(lastx - currx, lasty - curry, p.yaw);
             p.x += translated[0];
             p.y += translated[1];
 
@@ -217,7 +217,7 @@ public class Navigator {
         	// Render the distribution of particles to the gridmap
         	for(int i = 0; i < 5; i++) {
     			for(int j=0; j < 5; j++) {
-    				painter.setPixel(p.x - (2-j), p.y - (2-i), 0xFFFF0000);
+    				painter.setPixel((int)p.x - (2-j), (int)p.y - (2-i), 0xFFFF0000);
     			}
     		}
             
@@ -228,7 +228,7 @@ public class Navigator {
         }
         for(int i = 0; i < 9; i++) {
 			for(int j=0; j < 9; j++) {
-				painter.setPixel(bestPoint.x - (4-j), bestPoint.y - (4-i), 0xFF00FF00);
+				painter.setPixel((int)bestPoint.x - (4-j), (int)bestPoint.y - (4-i), 0xFF00FF00);
 			}
 		}
         painter.repaint();

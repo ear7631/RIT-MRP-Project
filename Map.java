@@ -39,11 +39,11 @@ public class Map {
     }
 
     public boolean valid(Point p) {
-        return this.valid(p.x, p.y);
+        return this.valid((int)p.x, (int)p.y);
     }
 
     public static double[] robotToMap(double x, double y, double yaw){
-        double[] retVal = new int[2];
+        double[] retVal = new double[2];
         double d = Math.sqrt(x*x + y*y);
         retVal[0] = Math.cos(yaw) * d * 15;
         retVal[1] = Math.sin(yaw) * d * 15;
@@ -63,8 +63,8 @@ public class Map {
         double yaw = p.yaw - (3 * (Math.PI / 4));
         for(int i=0; i<8; i++) {
             for(int j=1; j<=75; j++) {
-                x = p.x + (int)(Math.cos(yaw) * j);
-                y = p.y + (int)(Math.sin(yaw) * j);
+                x = (int)p.x + (int)(Math.cos(yaw) * j);
+                y = (int)p.y + (int)(Math.sin(yaw) * j);
                 if(!valid(x, y)) {
                     retVal[i] = (double)(j - 1) / 15;
                     break;

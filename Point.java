@@ -1,14 +1,19 @@
 public class Point {
-    public int x;
-    public int y;
+    public double x;
+    public double y;
     public double yaw;
     public double prob;
-
-    public Point(int x, int y, double yaw, double prob) {
-        this.x = x;
+    
+    
+    public Point(double x, double y, double yaw, double prob) {
+    	this.x = x;
         this.y = y;
         this.yaw = yaw;
         this.prob = prob;
+    }
+
+    public Point(int x, int y, double yaw, double prob) {
+        this((double)x, (double)y, yaw, prob);
     }
     
     public Point(int x, int y) {

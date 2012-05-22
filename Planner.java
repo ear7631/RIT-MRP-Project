@@ -236,13 +236,13 @@ public class Planner {
 	public void drawPoint(Point p, int color) {
 		for(int i = 0; i < 7; i++) {
 			for(int j=0; j < 7; j++) {
-				pixels[p.y - (3 - i)][p.x - (3 - j)] = color;
+				pixels[(int)p.y - (3 - i)][(int)p.x - (3 - j)] = color;
 			}
 		}
 	}
 	
 	public void drawEdge(Point src, Point dest) {
-		painter.setLine(src.x, src.y, dest.x, dest.y);
+		painter.setLine((int)src.x, (int)src.y, (int)dest.x, (int)dest.y);
 	}
 	
 	public void refreshImage() {
