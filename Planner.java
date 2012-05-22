@@ -31,7 +31,7 @@ public class Planner {
 		this.generateRoadmapEdges();
 		this.setSimulationBoundaries();
 		painter = new GridMap(2000, 700);
-		this.painter.setVisible(false);
+		//this.painter.setVisible(false);
 		
 		File file = new File(FILENAME);
 		
@@ -118,11 +118,11 @@ public class Planner {
 		
 		if(DEBUG) {
 			System.out.println("Debug is on, using preset points.");
-			this.drawPoint(start, 0xFF0000FF);
-			this.refreshImage();
 			//start = this.point.get("G4");
 			//goal = this.points.get("C1");
 		}
+        this.drawPoint(start, 0xFF0000FF);
+        this.refreshImage();
 		
 		// Create a copy of the roadmap.
 		// Do this because we add in neighbors for this iteration only.
