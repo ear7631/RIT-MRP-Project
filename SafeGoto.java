@@ -13,6 +13,8 @@ public class SafeGoto {
     @SuppressWarnings("deprecation")
 	public boolean move(SonarInterface sonar, Point pos, Point nextDest, Position2DInterface robot) {
 		RoboGuide guide = new RoboGuide(pos);
+        System.out.println(pos);
+        System.out.println(nextDest);
 
 		float[] sonars = sonar.getData().getRanges();
 		//double[] many_ranges = ranger.getData().getRanges();
