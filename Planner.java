@@ -103,7 +103,7 @@ public class Planner {
 		// uhoh case
 		if(neighbor == null) {
 			minimum = Double.MAX_VALUE;
-						
+			
 			for(Point candidate : this.points.values()) {
 				double d = Math.sqrt(
 						((candidate.x - origin.x) * (candidate.x - origin.x)) + 
@@ -125,8 +125,8 @@ public class Planner {
 		
 		if(DEBUG) {
 			System.out.println("Debug is on, using preset points.");
-			start = this.points.get("G4");
-			goal = this.points.get("C1");
+			//start = this.points.get("G4");
+			//goal = this.points.get("C1");
 		}
         this.drawPoint(start, 0xFF0000FF);
         this.drawPoint(goal, 0xFF0000FF);
@@ -579,12 +579,12 @@ public class Planner {
 		// Run this function if you want to see the roadmap.
 		Planner planner = new Planner();
 		Planner.DEBUG = true;
-		planner.refreshImage();
+		//planner.refreshImage();
 		// 1064, 159, 630, 201
-		Point start = null;
-		Point goal = null;
-		//Point start = new Point(1127, 174, 0, 0);
-		//Point goal = new Point(1129, 350-150, 0, 0);
+		//Point start = null;
+		//Point goal = null;
+		Point start = new Point(1131, 409, 0, 0);
+		Point goal = new Point(1630, 148, 0, 0);
 		System.out.println("Next roadmap point to go to: " + planner.nextLocalWaypoint(start, goal));
 		planner.reveal();
 	}
