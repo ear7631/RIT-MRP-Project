@@ -70,9 +70,12 @@ public class Navigator {
 			return;
 		}
 		
+		// Get the points, convert to pixel coordinates
 		while(fileReader.hasNextLine()) {
 			String[] pointdata = fileReader.nextLine().split(" ");
-			destinations.add(new Point(Double.parseDouble(pointdata[0]), Double.parseDouble(pointdata[1]), 0, 0));
+			double x = (Double.parseDouble(pointdata[0]) * 100) / 6.6;
+			double y = (Double.parseDouble(pointdata[1]) * 100) / 6.6;
+			destinations.add(new Point(x, y, 0, 0));
 		}
 
         distribution = getNewDistribution();
