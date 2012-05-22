@@ -42,6 +42,7 @@ public class Navigator {
     
     public static void main(String[] args) {
 		String filename;
+        painter.reset(map);
 
 		if (args.length == 3) {
 			pc = new PlayerClient(args[0], Integer.parseInt(args[1]));
@@ -147,6 +148,7 @@ public class Navigator {
         LinkedList<Point> toRemove = new LinkedList<Point>();
         for(Point p : distribution) {
             // Randomly kill about half the points.
+            painter.setPixel((int)p.x, (int)p.y, 0xFFFFFFFF);
             if(rand.nextDouble() < 0.5) {
                 toRemove.add(p);
                 continue;
@@ -202,11 +204,9 @@ public class Navigator {
 
         distribution = scale(distribution);
         Point bestPoint = new Point(0, 0);
-        painter.reset(map);
         for(Point p : distribution) {
         	// Render the distribution of particles to the gridmap
             painter.setPixel((int)p.x, (int)p.y, 0xFFFF0000);
-            
             
             if(p.prob > bestPoint.prob) {
                 bestPoint = p;
