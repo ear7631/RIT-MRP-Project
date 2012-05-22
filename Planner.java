@@ -21,14 +21,14 @@ public class Planner {
 	private HashMap<Point, Point> boundaries;
 	
 	public static final String FILENAME = "provided_bytes.dat";
-	private GridMap painter;
+	//private GridMap painter;
 	private int[][] pixels;
 	
 	public Planner() {
 		this.roadmap = new HashMap<Point, HashSet<Point>>();
 		this.points = new HashMap<String, Point>();
 		this.boundaries = new HashMap<Point, Point>();
-		painter = new GridMap(2000, 700);
+		//Navigator.painter = new GridMap(2000, 700);
 		this.generateRoadmapPoints();
 		this.generateRoadmapEdges();
 		this.setSimulationBoundaries();
@@ -260,20 +260,20 @@ public class Planner {
 	}
 	
 	public void drawEdge(Point src, Point dest) {
-		painter.setLine((int)src.x, (int)src.y, (int)dest.x, (int)dest.y);
+		Navigator.painter.setLine((int)src.x, (int)src.y, (int)dest.x, (int)dest.y);
 	}
 	
 	public void drawEdge(int x1, int y1, int x2, int y2) {
-		painter.setLine(x1, y1, x2, y2);
+		Navigator.painter.setLine(x1, y1, x2, y2);
 	}
 	
 	public void refreshImage() {
 		for(int i = 0; i < pixels.length; i++) {
 			for(int j = 0; j < pixels[i].length; j++) {
-				painter.setPixel(j, i, pixels[i][j]);
+				Navigator.painter.setPixel(j, i, pixels[i][j]);
 			}
 		}
-		painter.touch();
+		Navigator.painter.touch();
 	}
 	
 	private void generateRoadmapPoints() {
@@ -444,8 +444,8 @@ public class Planner {
 	}
 
 	private void reveal() {
-		this.painter.setVisible(true);
-		this.painter.repaint();
+		Navigator.painter.setVisible(true);
+		Navigator.painter.repaint();
 	}
 
 	public void setSimulationBoundaries() {

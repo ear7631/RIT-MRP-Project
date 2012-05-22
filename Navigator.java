@@ -24,7 +24,7 @@ import javaclient3.structures.PlayerColor;
 public class Navigator {
 
 	static SafeGoto safeGoto = new SafeGoto();
-	//static GridMap painter = new GridMap(2000, 700);
+	static GridMap painter = new GridMap(2000, 700);
 	static PlayerClient pc;
 	static Position2DInterface pos;
 	static RangerInterface laser;
@@ -44,7 +44,7 @@ public class Navigator {
     
     public static void main(String[] args) {
 		String filename;
-        //painter.reset(map);
+        painter.reset(map);
 
 		if (args.length == 3) {
 			pc = new PlayerClient(args[0], Integer.parseInt(args[1]));
@@ -108,7 +108,6 @@ public class Navigator {
             	// Get the next "step" in the path with our roadmap
             	// Argument is the GOAL destination. It uses whereAreWe as the START.
                 System.out.println(offset);
-                System.out.println(waypoint);
             	Point localDestination = planner.nextLocalWaypoint(offset, waypoint);
             	
             	//Arguments, sonar interface, current position, goal, position2d (for movement)
@@ -184,7 +183,7 @@ public class Navigator {
         Point bestPoint = new Point(0, 0);
         double count = 0;
         for(Point p : distribution) {
-            //painter.setPixel((int)p.x, (int)p.y, 0xFFFFFFFF);
+            painter.setPixel((int)p.x, (int)p.y, 0xFFFFFFFF);
             // Randomly kill about half the points.
             if(rand.nextDouble() < 0.5) {
                 toRemove.add(p);
@@ -247,19 +246,19 @@ public class Navigator {
         }
 
         distribution = scale(distribution);
-        /*for(Point p : distribution) {
+        for(Point p : distribution) {
         	// Render the distribution of particles to the gridmap
             painter.setPixel((int)p.x, (int)p.y, 0xFFFF0000);
         }
 
-        int radius = 4;
+        /*int radius = 4;
         for(int i=-radius; i<=radius; i++) {
             for(int j=-radius; j<=radius; j++) {
                 painter.setPixel((int)bestPoint.x+i, (int)bestPoint.y+j, 0xFF00FF00);
             }
-        }
+        }*/
 
-        painter.repaint();*/
+        painter.repaint();
         if(map.valid(bestPoint)) {
             return bestPoint;
         } else {
