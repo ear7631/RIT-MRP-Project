@@ -114,8 +114,7 @@ public class Planner {
 		return neighbor;
 	}
 	
-	public Point nextLocalWaypoint(Point goal) {
-		Point start = null;
+	public Point nextLocalWaypoint(Point start, Point goal) {
 		
 		if(DEBUG) {
 			System.out.println("Debug is on, using preset points.");
@@ -124,10 +123,6 @@ public class Planner {
 			this.refreshImage();
 			//start = this.point.get("G4");
 			goal = this.points.get("C1");
-		} else {
-			start = Navigator.whereAreWe();
-			this.drawPoint(start, 0xFF0000FF);
-			this.refreshImage();
 		}
 		
 		// Create a copy of the roadmap.
@@ -484,7 +479,7 @@ public class Planner {
 		Planner planner = new Planner();
 		Planner.DEBUG = true;
 		planner.refreshImage();
-		System.out.println("Next roadmap point to go to: " + planner.nextLocalWaypoint(null));
+		System.out.println("Next roadmap point to go to: " + planner.nextLocalWaypoint(null, null));
 		planner.reveal();
 	}
 
