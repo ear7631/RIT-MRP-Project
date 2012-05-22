@@ -35,7 +35,7 @@ public class Navigator {
     static double lastyaw = 0;
 
     // Number of points in particle cloud
-    static final int K = 100;
+    static final int K = 1000;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
     static final double PROB_THRESHOLD = 1.0 / (2 * K);
