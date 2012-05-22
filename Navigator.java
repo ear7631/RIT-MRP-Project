@@ -37,7 +37,7 @@ public class Navigator {
     static final int K = 1000;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
-    static final double PROB_THRESHOLD = 1.0 / (2 * K);
+    static final double PROB_THRESHOLD = 38; //1.0 / (2 * K);
     static final double LOC_THRESHOLD = 0.3;
     
     public static void main(String[] args) {
@@ -165,7 +165,10 @@ public class Navigator {
             for(int i=0; i<readings.length; i++) {
                 distance += Math.abs(readings[i] - ranges[i]);
             }
-            p.prob = 40 / distance;
+            p.prob = 40 - distance;
+            if(p.prob < PROB_THRESHOLD || !map.valid(p)) {
+                toRemove.add(p);
+            }
         }
         
         lastx = currx;
@@ -173,11 +176,6 @@ public class Navigator {
         lastyaw = curryaw;
 
         distribution = scale(distribution);
-        for(Point p : distribution) {
-            if(p.prob < PROB_THRESHOLD || !map.valid(p)) {
-                toRemove.add(p);
-            }
-        }
         System.out.printf("Removing %d particles.\n", toRemove.size());
         // Out of loop to avoid ConcurrentModificationException
         for(Point p : toRemove) {
