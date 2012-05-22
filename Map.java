@@ -42,10 +42,11 @@ public class Map {
         return this.valid(p.x, p.y);
     }
 
-    public static int[] robotToMap(double x, double y){
-        int[] retVal = new int[2];
-        retVal[0] = (int)(x * 15);
-        retVal[1] = (int)(y * 15);
+    public static double[] robotToMap(double x, double y, double yaw){
+        double[] retVal = new int[2];
+        double d = Math.sqrt(x*x + y*y);
+        retVal[0] = Math.cos(yaw) * d * 15;
+        retVal[1] = Math.sin(yaw) * d * 15;
         return retVal;
     }
     public static double[] mapToRobot(int x, int y){
