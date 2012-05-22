@@ -108,21 +108,16 @@ public class Navigator {
             	
             	//Arguments, sonar interface, current position, goal, position2d (for movement)
             	//TODO: make it work
-            	//safeGoto.move(sonar, p, localDestination, pos);
+            	safeGoto.move(sonar, offset, localDestination, pos);
         	}
 
             if(rateLimit == 5) {
                 //figure out where we are
-                Point p = whereAreWe();
-                offset = p;
+                offset = whereAreWe();
                 rateLimit = 0;
             }
             rateLimit++;
         }
-
-        // Translate the offset by where we think we are now.
-        offset.x -= pos.getX();
-        offset.y -= pos.getY();
 	}
 
 	private static boolean isTolerable(double x, double y) {
