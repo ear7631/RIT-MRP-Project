@@ -37,10 +37,11 @@ public class RoboGuide {
 	}
 
 	public double angleCorrection(double angle) {
-		if (angle > PI) {
-			angle = angle - (PI * 2);
-		} else if (angle < NEGPI) {
-			angle = angle + (PI * 2);
+		while(angle > PI) {
+			angle -= (PI * 2);
+		}
+		while(angle < NEGPI) {
+			angle += (PI * 2);
 		}
 		return angle;
 	}

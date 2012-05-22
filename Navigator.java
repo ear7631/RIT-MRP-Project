@@ -277,7 +277,7 @@ public class Navigator {
         return dist;
     }
 
-    private static double[] rangerToArr() {
+    public static double[] rangerToArr() {
         do {
             pc.readAll();
         } while(!sonar.isDataReady());
