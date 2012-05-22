@@ -145,9 +145,11 @@ public class Navigator {
 
         
         LinkedList<Point> toRemove = new LinkedList<Point>();
+        Point bestPoint = new Point(0, 0);
+        double count = 0;
         for(Point p : distribution) {
-            // Randomly kill about half the points.
             painter.setPixel((int)p.x, (int)p.y, 0xFFFFFFFF);
+            // Randomly kill about half the points.
             if(rand.nextDouble() < 0.5) {
                 toRemove.add(p);
                 continue;
@@ -166,8 +168,15 @@ public class Navigator {
             p.prob = 40 - distance;
             if(p.prob < PROB_THRESHOLD || !map.valid(p)) {
                 toRemove.add(p);
+            } else if(p.prob > 39) {
+                // Only average points that make the cut.
+                count++;
+                bestPoint.x += p.x;
+                bestPoint.y += p.y;
             }
         }
+        bestPoint.x /= count;
+        bestPoint.y /= count;
         
         lastx = currx;
         lasty = curry;
@@ -200,22 +209,24 @@ public class Navigator {
         }
 
         distribution = scale(distribution);
-        Point bestPoint = new Point(0, 0);
         for(Point p : distribution) {
         	// Render the distribution of particles to the gridmap
             painter.setPixel((int)p.x, (int)p.y, 0xFFFF0000);
-            
-            if(p.prob > bestPoint.prob) {
-                bestPoint = p;
+        }
+
+        int radius = 4;
+        for(int i=-radius; i<=radius; i++) {
+            for(int j=-radius; j<=radius; j++) {
+                painter.setPixel((int)bestPoint.x+i, (int)bestPoint.y+j, 0xFF00FF00);
             }
         }
-        painter.setPixel((int)bestPoint.x, (int)bestPoint.y, 0xFF00FF00);
+
         painter.repaint();
-        /*if(bestPoint.prob > LOC_THRESHOLD) {
+        if(map.valid(bestPoint)) {
             return bestPoint;
-        } else {*/
+        } else {
             return null;
-        //}
+        }
     }
 
     private static LinkedList<Point> scale(LinkedList<Point> dist) {
