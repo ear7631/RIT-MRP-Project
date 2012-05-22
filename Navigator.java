@@ -111,7 +111,7 @@ public class Navigator {
             	
             	//Arguments, sonar interface, current position, goal, position2d (for movement)
             	//TODO: make it work
-            	safeGoto.move(sonar, offset, localDestination, pos);
+            	reachedWaypoint = safeGoto.move(sonar, offset, localDestination, pos);
         	}
 
             if(rateLimit == 5) {
