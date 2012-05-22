@@ -28,10 +28,10 @@ public class Planner {
 		this.roadmap = new HashMap<Point, HashSet<Point>>();
 		this.points = new HashMap<String, Point>();
 		this.boundaries = new HashMap<Point, Point>();
+		painter = new GridMap(2000, 700);
 		this.generateRoadmapPoints();
 		this.generateRoadmapEdges();
 		this.setSimulationBoundaries();
-		painter = new GridMap(2000, 700);
 		//this.painter.setVisible(false);
 		
 		File file = new File(FILENAME);
@@ -125,8 +125,8 @@ public class Planner {
 		
 		if(DEBUG) {
 			System.out.println("Debug is on, using preset points.");
-			//start = this.point.get("G4");
-			//goal = this.points.get("C1");
+			start = this.points.get("G4");
+			goal = this.points.get("C1");
 		}
         this.drawPoint(start, 0xFF0000FF);
         this.drawPoint(goal, 0xFF0000FF);
@@ -261,6 +261,10 @@ public class Planner {
 	
 	public void drawEdge(Point src, Point dest) {
 		painter.setLine((int)src.x, (int)src.y, (int)dest.x, (int)dest.y);
+	}
+	
+	public void drawEdge(int x1, int y1, int x2, int y2) {
+		painter.setLine(x1, y1, x2, y2);
 	}
 	
 	public void refreshImage() {
@@ -455,10 +459,84 @@ public class Planner {
 		addBoundaryEdge(1650, 340, 1650, 457, b);
 		addBoundaryEdge(1650, 372, 1760, 372, b);
 		
+		addBoundaryEdge(194, 110, 196, 136, b);
+		addBoundaryEdge(196, 136, 224, 136, b);
+		addBoundaryEdge(160, 185, 200, 185, b);
+		addBoundaryEdge(200, 185, 200, 174, b);
+		addBoundaryEdge(127, 151, 127, 175, b);
+		addBoundaryEdge(127, 175, 96, 175, b);
+		addBoundaryEdge(240, 176, 257, 176, b);
+		addBoundaryEdge(257, 176, 257, 190, b);
+		addBoundaryEdge(298, 187, 298, 172, b);
+		addBoundaryEdge(298, 172, 315, 172, b);
+
+		addBoundaryEdge(254, 461, 254, 472, b);
+		addBoundaryEdge(254, 472, 226, 472, b);
+		addBoundaryEdge(198, 540, 198, 524, b);
+		addBoundaryEdge(198, 524, 228, 524, b);
+		addBoundaryEdge(298, 462, 298, 477, b);
+		addBoundaryEdge(298, 477, 315, 477, b);
+
+		addBoundaryEdge(1087, 174, 1107, 174, b);
+		addBoundaryEdge(1107, 174, 1107, 187, b);
+		addBoundaryEdge(1160, 170, 1144, 170, b);
+		addBoundaryEdge(1144, 170, 1144, 186, b);
+
+		addBoundaryEdge(1109, 455, 1109, 477, b);
+		addBoundaryEdge(1109, 477, 1088, 477, b);
+		addBoundaryEdge(1147, 458, 1147, 477, b);
+		addBoundaryEdge(1147, 477, 1165, 477, b);
+
+		addBoundaryEdge(1325, 173, 1392, 173, b);
+		addBoundaryEdge(1392, 173, 1415, 294, b);
+		addBoundaryEdge(1495, 179, 1456, 179, b);
+		addBoundaryEdge(1456, 179, 1456, 202, b);
+
+		addBoundaryEdge(1398, 454, 1389, 475, b);
+		addBoundaryEdge(1389, 475, 1377, 477, b);
+
+		addBoundaryEdge(1653, 151, 1653, 182, b);
+		addBoundaryEdge(1653, 182, 1685, 182, b);
+		addBoundaryEdge(1660, 320, 1638, 320, b);
+		addBoundaryEdge(1638, 320, 1638, 346, b);
+		addBoundaryEdge(1651, 372, 1745, 371, b);
+		addBoundaryEdge(1643, 407, 1643, 490, b);
+		addBoundaryEdge(1643, 420, 1676, 420, b);
+		addBoundaryEdge(1658, 522, 1658, 545, b);
+
+		//Big Box (renders some edges somewhat redundant)
+		addBoundaryEdge(300, 191, 300, 460, b);
+		addBoundaryEdge(300, 191, 1100, 191, b);
+		addBoundaryEdge(300, 460, 1100, 460, b);
+		addBoundaryEdge(1100, 460, 1100, 191, b);
+
+		addBoundaryEdge(1148, 172, 1305, 172, b);
+		addBoundaryEdge(1305, 172, 1305, 270, b);
+		addBoundaryEdge(1305, 270, 1410, 270, b);
+		addBoundaryEdge(1410, 270, 1390, 477, b);
+		addBoundaryEdge(1148, 172, 1148, 476, b);
+		addBoundaryEdge(1148, 476, 1390, 477, b);
+
+		addBoundaryEdge(1464, 182, 1593, 182, b);
+		addBoundaryEdge(1593, 182, 1593, 514, b);
+		addBoundaryEdge(1593, 514, 1464, 514, b);
+		addBoundaryEdge(1464, 514, 1464, 182, b);
+
+		addBoundaryEdge(202, 181, 254, 181, b);
+		addBoundaryEdge(254, 181, 254, 462, b);
+		addBoundaryEdge(254, 462, 86, 460, b);
+		addBoundaryEdge(86, 460, 86, 330, b);
+		addBoundaryEdge(86, 330, 202, 330, b);
+		addBoundaryEdge(202, 330, 202, 181, b);
+
+		//Special tweaks
+		addBoundaryEdge(391, 174, 391, 475, b);
+		addBoundaryEdge(197, 516, 197, 570, b);
+		
 	}
 	
 	public void addBoundaryEdge(int x1, int y1, int x2, int y2, HashMap<Point, Point> b) {
-		//drawEdge(x1, y1, x2, y2);
+		drawEdge(x1, y1, x2, y2);
 		b.put(new Point(x1, y1), new Point(x2, y2));
 	}
 	
@@ -503,10 +581,10 @@ public class Planner {
 		Planner.DEBUG = true;
 		planner.refreshImage();
 		// 1064, 159, 630, 201
-		//Point start = null;
-		//Point goal = null;
-		Point start = new Point(1127, 174, 0, 0);
-		Point goal = new Point(1129, 350-150, 0, 0);
+		Point start = null;
+		Point goal = null;
+		//Point start = new Point(1127, 174, 0, 0);
+		//Point goal = new Point(1129, 350-150, 0, 0);
 		System.out.println("Next roadmap point to go to: " + planner.nextLocalWaypoint(start, goal));
 		planner.reveal();
 	}
