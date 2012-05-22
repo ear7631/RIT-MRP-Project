@@ -189,10 +189,10 @@ public class Navigator {
                 toRemove.add(p);
                 continue;
             }
-            p.yaw += lastyaw - curryaw + rand.nextDouble() * 0.02 - 0.01;
+            p.yaw += lastyaw - curryaw + rand.nextGaussian() * 0.01;
             double[] translated = Map.robotToMap(lastx - currx, lasty - curry, p.yaw);
-            p.x += translated[0] + rand.nextDouble() * 2 - 1;
-            p.y += translated[1] + rand.nextDouble() * 2 - 1;
+            p.x += translated[0] + rand.nextGaussian() * 1;
+            p.y += translated[1] + rand.nextGaussian() * 1;
 
             //scale likelihood to map
             double[] readings = map.checkHere(p);
