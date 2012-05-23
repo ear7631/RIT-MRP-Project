@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.Timer;
 
 //Player/Stage imports
 import javaclient3.*;
@@ -98,6 +99,12 @@ public class Navigator {
         			return;
         		} else {
         			System.out.println("Destination reached, on to the next one...");
+        			// We've reached a waypoint... pause for fanfare!
+        			try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// Well, fine then.
+					}
         			waypoint = destinations.removeFirst();
         		}
         	}
