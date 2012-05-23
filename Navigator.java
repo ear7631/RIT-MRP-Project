@@ -4,6 +4,7 @@
  * Oh god I've been kidnapped help...
  * 
  * @author Nathaniel Case
+ * @author Eitan Romanoff
  */
 
 import java.io.File;
@@ -36,10 +37,10 @@ public class Navigator {
     static double lastyaw = 0;
 
     // Number of points in particle cloud
-    static final int K = 2000;
+    static final int K = 4000;
     static final Map map = new Map("map.png");
     static final Random rand = new Random();
-    static final double PROB_THRESHOLD = 35;
+    static final double PROB_THRESHOLD = 30;
     static final double LOC_THRESHOLD = 0.3;
     
     public static void main(String[] args) {
@@ -203,7 +204,7 @@ public class Navigator {
             p.prob = 40 - distance;
             if(p.prob < PROB_THRESHOLD || !map.valid(p)) {
                 toRemove.add(p);
-            } else if(p.prob > 39) {
+            } else if(p.prob > 39.5) {
                 // Only average points that make the cut.
                 count++;
                 bestPoint.x += p.x;

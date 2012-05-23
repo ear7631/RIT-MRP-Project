@@ -4,6 +4,7 @@
  * Attempts to avoid objects while going to a goal using potential field analysis.
  *
  * @author Eitan Romanoff
+ * @author Nathaniel Case
  */
 
 import javaclient3.*;
